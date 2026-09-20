@@ -131,15 +131,12 @@ export default function Home() {
       </header>
 
       <main id="top">
-        <section className="cover-hero">
-          <div className="cover-hero-image"><img src="/manus-storage/menu-01_17ccbaef.jpg" alt="The Creative Hair Solutions Family Salon menu cover" /><div className="cover-image-gloss" /><div className="cover-image-chip"><Sparkles size={14} /> Original salon menu cover</div></div>
-          <div className="cover-hero-side">
-            <div className="cover-brand-lockup"><span className="cover-brand-scissor">C</span><div><strong>THE<br />CREATIVE</strong><span>HAIR SOLUTIONS</span><small>FAMILY SALON</small></div></div>
-            <SectionLabel>Beauty services · Ulhasnagar</SectionLabel>
-            <h1>We care about<br /><em>your hair.</em></h1>
-            <p>Professional hair, beauty and family salon services — presented with the care and confidence you already know.</p>
-            <div className="hero-actions"><button className="button button-dark" onClick={scrollToBooking}>Book your visit <ArrowRight size={17} /></button><a className="text-link" href={whatsappHref} target="_blank" rel="noreferrer"><MessageCircle size={16} /> WhatsApp us</a></div>
-            <div className="cover-contact"><b>Call</b><span>092226 31384</span><span>85519 88835 · 88884 60686</span></div>
+        <section className="luxury-hero">
+          <div className="luxury-hero-image"><img src={images.hero} alt="Luxury hair styling at The Creative Hair Solutions" /><div className="luxury-hero-shade" /></div>
+          <div className="luxury-hero-content section-shell">
+            <div className="luxury-hero-topline"><span>THE CREATIVE</span><span>HAIR SOLUTIONS · FAMILY SALON</span></div>
+            <div className="luxury-hero-copy"><SectionLabel light>Salon & beauty · Ulhasnagar</SectionLabel><h1>Where beauty<br /><em>meets craft.</em></h1><p>Premium hair, beauty and grooming experiences, crafted around you.</p><div className="hero-actions"><button className="button button-copper" onClick={scrollToBooking}>Book appointment <ArrowRight size={17} /></button><button className="luxury-outline-button" onClick={() => setMenuOpen(true)}>Explore services <ArrowRight size={17} /></button></div><div className="luxury-proof"><span><MapPin size={14} /> Ulhasnagar</span><span><Star size={14} fill="currentColor" /> Expert stylists</span><span><Sparkles size={14} /> Premium experience</span></div></div>
+            <div className="luxury-slide-number"><strong>01</strong><span>/ 03</span><i /></div>
           </div>
         </section>
 
