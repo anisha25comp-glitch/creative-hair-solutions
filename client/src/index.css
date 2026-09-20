@@ -675,3 +675,70 @@ h1, h2, h3, h4, strong, b { font-weight: 700; }
   .action-grid { max-width: none; }
   .staff-login-card { padding: 42px 24px 34px; }
 }
+
+/* Clean text menu: main types first, subtypes on click */
+.menu-heading-side { display: flex; align-items: flex-end; flex-direction: column; gap: 20px; }
+.menu-close { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #cdb5a5; padding: 10px 13px; background: transparent; color: #7b5a4d; font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.menu-close:hover { border-color: #a96547; background: #2f1d18; color: #fffaf6; }
+.menu-category-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; max-width: 1000px; margin: 62px auto 0; padding: 0 34px; }
+.menu-category { border: 1px solid #d6c0b1; background: #fffaf6; box-shadow: 0 12px 26px rgba(55,37,27,.07); }
+.menu-category-open { border-color: #aa6c4d; box-shadow: 0 18px 34px rgba(55,37,27,.13); }
+.menu-category-trigger { display: flex; align-items: center; width: 100%; gap: 13px; padding: 21px 20px; background: transparent; color: #3f2b23; text-align: left; }
+.menu-category-trigger:hover { background: #f1e5dc; }
+.menu-category-trigger > span:nth-child(2) { display: flex; flex: 1; flex-direction: column; gap: 5px; }
+.menu-category-trigger b { font-family: "Cormorant Garamond", serif; font-size: 27px; font-weight: 700; line-height: .9; }
+.menu-category-trigger small { color: #987e70; font-size: 10px; font-weight: 700; letter-spacing: .04em; }
+.menu-category-trigger > svg { color: #b67859; transition: transform .2s ease; }
+.menu-category-open .menu-category-trigger > svg { transform: rotate(180deg); }
+.menu-category-icon { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #d7b5a1; border-radius: 50%; color: #a96547; }
+.menu-subtypes { border-top: 1px solid #e5d5ca; padding: 7px 20px 10px; background: #fdf7f2; }
+.menu-subtype { display: grid; grid-template-columns: minmax(0, 1fr) auto 30px; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid #eaded6; }
+.menu-subtype:last-child { border-bottom: 0; }
+.menu-subtype > div { display: flex; flex-direction: column; gap: 4px; }
+.menu-subtype b { color: #4a342b; font-size: 12px; font-weight: 800; }
+.menu-subtype small { color: #9b8478; font-size: 10px; font-weight: 600; line-height: 1.35; }
+.menu-subtype > span { color: #a96547; font-size: 10px; font-weight: 800; white-space: nowrap; }
+.menu-subtype > button { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #2f1d18; color: #fffaf6; }
+.menu-subtype > button:hover { background: #b67859; }
+@media (max-width: 700px) {
+  .menu-heading-side { display: block; }
+  .menu-close { margin-top: 18px; }
+  .menu-category-grid { grid-template-columns: 1fr; margin-top: 38px; padding-inline: 18px; }
+  .menu-category-trigger { padding: 18px 15px; }
+  .menu-category-trigger b { font-size: 24px; }
+  .menu-subtypes { padding-inline: 15px; }
+  .menu-subtype { grid-template-columns: minmax(0, 1fr) auto; }
+  .menu-subtype > button { grid-column: 2; grid-row: 1; }
+}
+
+/* Separate salon shop — Store never opens the menu */
+.cart-count { display: inline-grid; place-items: center; min-width: 16px; height: 16px; border-radius: 50%; background: #c78760; color: #26150f; font-size: 9px; font-weight: 900; }
+.store-section { padding: 120px 0 130px; background: #241510; color: #fffaf5; }
+.store-heading { display: grid; grid-template-columns: 1fr 1fr; align-items: end; gap: 80px; }
+.store-heading h2 { margin-top: 20px; color: #fffaf5; font-family: "Cormorant Garamond", serif; font-size: clamp(58px, 7vw, 98px); font-weight: 700; line-height: .8; letter-spacing: -.06em; }
+.store-heading h2 em { color: #d39a73; font-style: italic; }
+.store-heading p { max-width: 360px; margin-bottom: 16px; color: rgba(255,245,235,.72); font-size: 14px; line-height: 1.7; }
+.store-bag-status { display: inline-flex; align-items: center; gap: 8px; color: #d39a73; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.store-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 60px; }
+.store-card { border: 1px solid rgba(220,168,133,.27); background: linear-gradient(145deg, #3b241b, #2a1813); box-shadow: 0 14px 30px rgba(0,0,0,.18); }
+.store-card-visual { display: flex; align-items: flex-start; justify-content: space-between; min-height: 145px; padding: 18px; background: radial-gradient(circle at 70% 35%, rgba(207,144,103,.36), transparent 32%), linear-gradient(135deg, #68402e, #25130e); color: #e5b08c; }
+.store-card-visual span { border: 1px solid rgba(238,190,157,.4); padding: 6px 8px; color: #f3c3a1; font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.store-card-visual svg { opacity: .75; }
+.store-card-body { padding: 22px 19px 19px; }
+.store-card-body > small { color: #c9987d; font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.store-card-body h3 { min-height: 44px; margin-top: 9px; color: #fffaf5; font-family: "Cormorant Garamond", serif; font-size: 27px; font-weight: 700; line-height: .88; }
+.store-card-body p { min-height: 43px; margin-top: 13px; color: rgba(255,245,235,.62); font-size: 11px; line-height: 1.5; }
+.store-card-buy { display: flex; align-items: center; justify-content: space-between; gap: 9px; margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,245,235,.13); }
+.store-card-buy strong { color: #e4ad87; font-family: "Cormorant Garamond", serif; font-size: 24px; font-weight: 700; }
+.store-card-buy button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(221,164,127,.5); padding: 9px 10px; background: transparent; color: #fffaf5; font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.store-card-buy button:hover { background: #c78760; color: #241510; }
+@media (max-width: 800px) {
+  .store-heading { display: block; }
+  .store-heading > div:last-child { margin-top: 35px; }
+  .store-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .store-section { padding: 86px 0 95px; }
+  .store-grid { grid-template-columns: 1fr; }
+  .store-card-body h3, .store-card-body p { min-height: 0; }
+}
