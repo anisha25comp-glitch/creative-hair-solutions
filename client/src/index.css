@@ -644,3 +644,16 @@ h1, h2, h3, h4, strong, b { font-weight: 700; }
   .luxury-proof { gap: 13px; margin-top: 26px; }
   .luxury-slide-number { right: 18px; bottom: 34px; }
 }
+
+/* Requested stacked quick-action rows */
+.first-page-actions { padding: 18px 0; background: #21130f; }
+.action-grid { display: flex; flex-direction: column; gap: 10px; max-width: 760px; margin: 0 auto; }
+.action-grid > * { min-height: 70px; padding: 15px 20px; border: 1px solid rgba(226,170,133,.34); border-left: 3px solid #c78760; background: linear-gradient(100deg, rgba(82,48,35,.9), rgba(40,23,18,.88)); box-shadow: 0 8px 20px rgba(0,0,0,.16); }
+.action-grid > *:first-child { border-left: 3px solid #e1ae8a; }
+.action-grid > *:hover { padding-left: 26px; border-color: #e1ae8a; background: linear-gradient(100deg, rgba(119,70,49,.96), rgba(56,30,22,.94)); }
+.action-grid b { font-size: 12px; }
+.action-grid small { color: rgba(255,250,246,.72); font-size: 10px; }
+@media (max-width: 680px) {
+  .action-grid { padding-inline: 16px; }
+  .action-grid > * { min-height: 64px; }
+}
