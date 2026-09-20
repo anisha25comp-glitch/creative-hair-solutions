@@ -742,3 +742,10 @@ h1, h2, h3, h4, strong, b { font-weight: 700; }
   .store-grid { grid-template-columns: 1fr; }
   .store-card-body h3, .store-card-body p { min-height: 0; }
 }
+
+/* Actual hero gap fix: stop flex space-between from reopening the vertical distance */
+.luxury-hero-content { justify-content: flex-start; }
+.luxury-hero-copy { margin-top: 34px; }
+@media (max-width: 680px) {
+  .luxury-hero-copy { margin-top: 24px; }
+}
