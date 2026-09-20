@@ -170,8 +170,7 @@ export default function Home() {
           <div className="luxury-hero-image"><img src={images.hero} alt="Luxury hair styling at The Creative Hair Solutions" /><div className="luxury-hero-shade" /></div>
           <div className="luxury-hero-content section-shell">
             <div className="luxury-hero-topline"><span>THE CREATIVE</span><span>HAIR SOLUTIONS · FAMILY SALON</span></div>
-            <div className="luxury-hero-copy"><SectionLabel light>Salon & beauty</SectionLabel><h1>Where beauty<br /><em>meets craft.</em></h1><p>Premium hair, beauty and grooming experiences, crafted around you.</p><div className="hero-actions"><button className="button button-copper" onClick={() => scrollToBooking()}>Book appointment <ArrowRight size={17} /></button><button className="luxury-outline-button" onClick={() => setMenuOpen(true)}>Explore services <ArrowRight size={17} /></button></div></div>
-            <div className="luxury-slide-number"><strong>01</strong><span>/ 03</span><i /></div>
+            <div className="luxury-hero-copy"><SectionLabel light>Salon & beauty</SectionLabel><h1>Where beauty<br /><em>meets craft.</em></h1><p>Premium hair, beauty and grooming experiences, crafted around you.</p><div className="hero-actions"><button className="button button-copper" onClick={() => scrollToBooking()}>Book appointment <ArrowRight size={17} /></button></div></div>
           </div>
         </section>
 
