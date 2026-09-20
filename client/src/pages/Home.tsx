@@ -94,7 +94,7 @@ export default function Home() {
           <LogoMark />
           <span className="brand-copy">
             <strong>THE CREATIVE</strong>
-            <span>Hair Solutions</span>
+            <span>Hair Solutions · Family Salon</span>
           </span>
         </a>
         <nav className={`main-nav ${mobileOpen ? "main-nav-open" : ""}`} aria-label="Main navigation">
@@ -113,7 +113,7 @@ export default function Home() {
       <main id="top">
         <section className="hero-section">
           <div className="hero-copy">
-            <SectionLabel>Unisex salon · Ulhasnagar</SectionLabel>
+            <SectionLabel>Family salon · Ulhasnagar</SectionLabel>
             <h1>Good hair<br /><em>changes</em> everything.</h1>
             <p className="hero-intro">Thoughtful cuts, colour and care for people who like their beauty a little more personal.</p>
             <div className="hero-actions">
@@ -128,7 +128,7 @@ export default function Home() {
           <div className="hero-visual">
             <img src={images.hero} alt="Client with a glossy, softly waved haircut" />
             <div className="hero-visual-overlay" />
-            <div className="hero-note"><Sparkles size={16} /><span>Made for your<br /><b>everyday wow</b></span></div>
+            <div className="hero-note"><Sparkles size={16} /><span>The Creative<br /><b>Family Salon</b></span></div>
             <div className="hero-image-caption">01 <span /> Hair, but make it yours</div>
           </div>
         </section>
@@ -166,7 +166,7 @@ export default function Home() {
         <section className="visit-section" id="visit"><div className="section-shell visit-grid"><div className="map-panel"><MapView className="salon-map" initialCenter={{ lat: 19.2183, lng: 73.1645 }} initialZoom={15} /><div className="map-overlay"><span><MapPin size={15} /> You’re close</span><a href={mapsHref} target="_blank" rel="noreferrer">Get directions <ArrowRight size={15} /></a></div></div><div className="visit-copy"><SectionLabel>Find us</SectionLabel><h2>Drop in for<br /><em>good hair.</em></h2><p>Shop No. 1, Bismillah Juice Center, Sai Mannat, Gym, besides, opposite Jai Baba Dham, near Talwalkars, Ulhasnagar, Maharashtra 421002</p><div className="hours"><div><span>Monday — Sunday</span><strong>10:30 am — 8:30 pm</strong></div><div><span>Walk-ins</span><strong>Welcome when available</strong></div></div><a className="button button-dark" href={mapsHref} target="_blank" rel="noreferrer">Open in Google Maps <MapPin size={16} /></a></div></div></section>
       </main>
 
-      <footer className="site-footer"><div className="section-shell footer-top"><a className="brand footer-brand" href="#top"><LogoMark /><span className="brand-copy"><strong>THE CREATIVE</strong><span>Hair Solutions</span></span></a><p>Modern beauty, made personal.<br />Ulhasnagar, Maharashtra.</p><div className="footer-links"><a href={whatsappHref} target="_blank" rel="noreferrer"><MessageCircle size={16} /> WhatsApp</a><a href="https://www.instagram.com/" target="_blank" rel="noreferrer"><Instagram size={16} /> Instagram</a><a href={`tel:${phone.replace(/\s/g, "")}`}><Phone size={16} /> Call us</a></div></div><div className="section-shell footer-bottom"><span>© 2025 The Creative Hair Solutions</span><span>Made for your everyday wow <Sparkles size={13} /></span></div></footer>
+      <footer className="site-footer"><div className="section-shell footer-top"><a className="brand footer-brand" href="#top"><LogoMark /><span className="brand-copy"><strong>THE CREATIVE</strong><span>Hair Solutions · Family Salon</span></span></a><p>Modern beauty, made personal.<br />Ulhasnagar, Maharashtra.</p><div className="footer-links"><a href={whatsappHref} target="_blank" rel="noreferrer"><MessageCircle size={16} /> WhatsApp</a><a href="https://www.instagram.com/" target="_blank" rel="noreferrer"><Instagram size={16} /> Instagram</a><a href={`tel:${phone.replace(/\s/g, "")}`}><Phone size={16} /> Call us</a></div></div><div className="section-shell footer-bottom"><span>© 2025 The Creative Hair Solutions</span><span>Made for your everyday wow <Sparkles size={13} /></span></div></footer>
       <a className="floating-whatsapp" href={whatsappHref} target="_blank" rel="noreferrer" aria-label="Chat on WhatsApp"><MessageCircle size={22} /></a>
     </div>
   );
