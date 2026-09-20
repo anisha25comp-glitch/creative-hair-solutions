@@ -4,6 +4,7 @@ import {
   ArrowRight,
   CalendarDays,
   Check,
+  Heart,
   ChevronDown,
   Clock3,
   Instagram,
@@ -13,6 +14,7 @@ import {
   MoreHorizontal,
   Phone,
   Plus,
+  Search,
   ShoppingBag,
   Scissors,
   Sparkles,
@@ -22,6 +24,15 @@ import {
 } from "lucide-react";
 
 const phone = "092226 31384";
+const appointmentTimes = [
+  "Anytime works",
+  "10:30 am", "11:00 am", "11:30 am", "12:00 pm", "12:30 pm",
+  "1:00 pm", "1:30 pm", "2:00 pm", "2:30 pm", "3:00 pm", "3:30 pm",
+  "4:00 pm", "4:30 pm", "5:00 pm", "5:30 pm", "6:00 pm", "6:30 pm",
+  "7:00 pm", "7:30 pm", "8:00 pm", "8:30 pm",
+];
+const providers = ["Any available stylist", "Senior stylist", "Beauty specialist", "Creative team — choose for me"];
+const storeCategories = ["All products", "Hair care", "Skin care"];
 const whatsappHref = "https://wa.me/919222631384";
 const mapsHref = "https://www.google.com/maps/search/?api=1&query=The+Creative+Hair+Solutions+Unisex+Salon+Ulhasnagar";
 
@@ -80,12 +91,13 @@ const menuCategories = [
 ];
 
 const storeItems = [
-  { name: "Absolut Repair Shampoo", brand: "L’Oréal Professionnel", description: "Repair-focused cleansing for dry, damaged hair.", price: 1250, tag: "Repair" },
-  { name: "Vitamino Color Conditioner", brand: "L’Oréal Professionnel", description: "Colour care that keeps hair soft, glossy and vibrant.", price: 1350, tag: "Colour care" },
-  { name: "Fibre Clinix Hair Mask", brand: "Schwarzkopf Professional", description: "A deep weekly ritual for stronger-looking hair.", price: 1650, tag: "Best seller" },
-  { name: "Professional Smoothening Serum", brand: "The Creative edit", description: "A lightweight finishing serum for shine and frizz control.", price: 899, tag: "Finishing" },
-  { name: "Hair Spa Repair Kit", brand: "The Creative edit", description: "A complete at-home care ritual between salon visits.", price: 1499, tag: "Ritual" },
-  { name: "Texture & Volume Mist", brand: "Schwarzkopf Professional", description: "Soft hold, touchable texture and effortless volume.", price: 799, tag: "Styling" },
+  { name: "Absolut Repair Shampoo", brand: "L’Oréal Professionnel", description: "Repair-focused cleansing for dry, damaged hair.", price: 1250, tag: "Repair", category: "Hair care" },
+  { name: "Vitamino Color Conditioner", brand: "L’Oréal Professionnel", description: "Colour care that keeps hair soft, glossy and vibrant.", price: 1350, tag: "Colour care", category: "Hair care" },
+  { name: "Fibre Clinix Hair Mask", brand: "Schwarzkopf Professional", description: "A deep weekly ritual for stronger-looking hair.", price: 1650, tag: "Best seller", category: "Hair care" },
+  { name: "Professional Smoothening Serum", brand: "The Creative edit", description: "A lightweight finishing serum for shine and frizz control.", price: 899, tag: "Finishing", category: "Hair care" },
+  { name: "Hair Spa Repair Kit", brand: "The Creative edit", description: "A complete at-home care ritual between salon visits.", price: 1499, tag: "Ritual", category: "Hair care" },
+  { name: "Texture & Volume Mist", brand: "Schwarzkopf Professional", description: "Soft hold, touchable texture and effortless volume.", price: 799, tag: "Styling", category: "Hair care" },
+  { name: "Hydrating Facial Care Kit", brand: "The Creative edit", description: "A gentle at-home reset for a calm, fresh-looking glow.", price: 950, tag: "Skin care", category: "Skin care" },
 ];
 
 function LogoMark() {
@@ -113,7 +125,18 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [submitted, setSubmitted] = useState(false);
   const [selectedService, setSelectedService] = useState("Precision cut & finish");
+  const [selectedServices, setSelectedServices] = useState(["Precision cut & finish"]);
+  const [selectedProvider, setSelectedProvider] = useState(providers[0]);
   const [cartCount, setCartCount] = useState(0);
+  const [storeFilter, setStoreFilter] = useState("All products");
+  const [storeQuery, setStoreQuery] = useState("");
+  const [wishlist, setWishlist] = useState<string[]>([]);
+
+  const filteredStoreItems = useMemo(() => storeItems.filter((product) => {
+    const matchesFilter = storeFilter === "All products" || product.category === storeFilter;
+    const query = storeQuery.trim().toLowerCase();
+    return matchesFilter && (!query || `${product.name} ${product.brand}`.toLowerCase().includes(query));
+  }), [storeFilter, storeQuery]);
 
   const filteredServices = useMemo(
     () => activeCategory === "All" ? services : services.filter((service) => service.category === activeCategory),
@@ -124,6 +147,16 @@ export default function Home() {
     if (serviceName) setSelectedService(serviceName);
     bookingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     setMobileOpen(false);
+  };
+
+  const selectBookingService = (serviceName: string) => {
+    setSelectedService(serviceName);
+    setSelectedServices((current) => current.includes(serviceName) ? current : [...current, serviceName]);
+    scrollToBooking(serviceName);
+  };
+
+  const toggleWishlist = (productName: string) => {
+    setWishlist((current) => current.includes(productName) ? current.filter((name) => name !== productName) : [...current, productName]);
   };
 
   const addToBag = (productName: string) => {
@@ -170,7 +203,7 @@ export default function Home() {
           <div className="luxury-hero-image"><img src={images.hero} alt="Luxury hair styling at The Creative Hair Solutions" /><div className="luxury-hero-shade" /></div>
           <div className="luxury-hero-content section-shell">
             <div className="luxury-hero-topline"><span>THE CREATIVE</span><span>HAIR SOLUTIONS · FAMILY SALON</span></div>
-            <div className="luxury-hero-copy"><SectionLabel light>Salon & beauty</SectionLabel><h1>Where beauty<br /><em>meets craft.</em></h1><p>Premium hair, beauty and grooming experiences, crafted around you.</p><div className="hero-actions"><button className="button button-copper" onClick={() => scrollToBooking()}>Book appointment <ArrowRight size={17} /></button></div></div>
+            <div className="luxury-hero-copy"><SectionLabel light>Salon & beauty</SectionLabel><h1>Where beauty<br /><em>meets craft.</em></h1><p>Premium hair, beauty and grooming experiences, crafted around you.</p></div>
           </div>
         </section>
 
@@ -188,13 +221,13 @@ export default function Home() {
         <section className="services-section section-shell" id="services">
           <div className="section-topline"><div><SectionLabel>Signature services</SectionLabel><h2>Come for the<br /><em>feeling.</em> Stay for the hair.</h2></div><p className="section-aside">A considered edit of the things we do best, with room for a little magic in between.</p></div>
           <div className="service-filters" role="tablist" aria-label="Filter services">{categories.map((category) => <button key={category} className={activeCategory === category ? "filter-active" : ""} onClick={() => setActiveCategory(category)} role="tab" aria-selected={activeCategory === category}>{category}</button>)}</div>
-          <div className="service-grid">{filteredServices.map((service) => <article className="service-card" key={service.name}><div className="service-card-top"><span className="service-tag">{service.tag}</span><span className="service-price">{service.price}</span></div><h3>{service.name}</h3><p>{service.description}</p><button className="service-arrow" onClick={() => scrollToBooking(service.name)} aria-label={`Book ${service.name}`}><ArrowRight size={18} /></button></article>)}</div>
+          <div className="service-grid">{filteredServices.map((service) => <article className="service-card" key={service.name}><div className="service-card-top"><span className="service-tag">{service.tag}</span><span className="service-price">{service.price}</span></div><h3>{service.name}</h3><p>{service.description}</p><button className="service-arrow" onClick={() => selectBookingService(service.name)} aria-label={`Book ${service.name}`}><ArrowRight size={18} /></button></article>)}</div>
           <div className="service-footer"><span>Not sure what you need?</span><button className="outline-button" onClick={() => scrollToBooking()}>Let’s talk it through <ArrowRight size={16} /></button></div>
         </section>
 
-        <section className="store-section" id="store"><div className="section-shell"><div className="store-heading"><div><SectionLabel>Salon shop</SectionLabel><h2>Bring the<br /><em>ritual home.</em></h2></div><div><p>Professional products chosen to keep your salon finish feeling fresh between visits.</p><span className="store-bag-status"><ShoppingBag size={15} /> {cartCount === 0 ? "Your bag is ready" : `${cartCount} item${cartCount === 1 ? "" : "s"} in your bag`}</span></div></div><div className="store-grid">{storeItems.map((product) => <article className="store-card" key={product.name}><div className="store-card-visual"><span>{product.tag}</span><ShoppingBag size={25} /></div><div className="store-card-body"><small>{product.brand}</small><h3>{product.name}</h3><p>{product.description}</p><div className="store-card-buy"><strong>₹{product.price.toLocaleString("en-IN")}</strong><button onClick={() => addToBag(product.name)}>Add to bag <Plus size={15} /></button></div></div></article>)}</div></div></section>
+        <section className="store-section" id="store"><div className="section-shell"><div className="store-heading"><div><SectionLabel>Curated edit</SectionLabel><h2>Shop your<br /><em>care ritual.</em></h2></div><div><p>Salon-picked essentials for your next Creative look, with a free consultation on every store order.</p><span className="store-bag-status"><ShoppingBag size={15} /> {cartCount === 0 ? "Your bag is ready" : `${cartCount} item${cartCount === 1 ? "" : "s"} in your bag`} · {wishlist.length} saved</span></div></div><div className="store-toolbar"><div className="store-filters">{storeCategories.map((category) => <button key={category} className={storeFilter === category ? "store-filter-active" : ""} onClick={() => setStoreFilter(category)}>{category}</button>)}</div><label className="store-search"><Search size={15} /><input value={storeQuery} onChange={(event) => setStoreQuery(event.target.value)} placeholder="Search products" aria-label="Search products" /></label></div><div className="store-grid">{filteredStoreItems.map((product) => <article className="store-card" key={product.name}><div className="store-card-visual"><span>{product.tag}</span><button className={`wishlist-button ${wishlist.includes(product.name) ? "wishlist-active" : ""}`} onClick={() => toggleWishlist(product.name)} aria-label={`Save ${product.name}`}><Heart size={18} fill={wishlist.includes(product.name) ? "currentColor" : "none"} /></button></div><div className="store-card-body"><small>{product.category} · {product.brand}</small><h3>{product.name}</h3><p>{product.description}</p><div className="store-card-buy"><strong>₹{product.price.toLocaleString("en-IN")}</strong><button onClick={() => addToBag(product.name)}>Add to bag <Plus size={15} /></button></div></div></article>)}</div>{filteredStoreItems.length === 0 && <p className="store-empty">No products match that search yet.</p>}<div className="store-cart-bar"><ShoppingBag size={16} /><span>{cartCount} in bag</span><button onClick={() => toast.info("Your salon bag is ready", { description: "WhatsApp checkout can be connected next." })}>Open bag <ArrowRight size={15} /></button></div></div></section>
 
-        {menuOpen && <section className="menu-timeline" id="menu"><div className="section-shell menu-heading"><div><SectionLabel>Our complete menu</SectionLabel><h2>Choose your<br /><em>experience.</em></h2></div><div className="menu-heading-side"><p>Start with a main service type. Click any category to reveal its subtypes, details and starting prices.</p><button className="menu-close" onClick={() => { setMenuOpen(false); setOpenMenuCategory(null); }}>Close menu <X size={15} /></button></div></div><div className="menu-category-grid">{menuCategories.map((category) => { const Icon = category.icon; const isOpen = openMenuCategory === category.name; return <div className={`menu-category ${isOpen ? "menu-category-open" : ""}`} key={category.name}><button className="menu-category-trigger" onClick={() => setOpenMenuCategory(isOpen ? null : category.name)} aria-expanded={isOpen}><span className="menu-category-icon"><Icon size={20} /></span><span><b>{category.name}</b><small>{category.description}</small></span><ChevronDown size={18} /></button>{isOpen && <div className="menu-subtypes">{category.items.map((item) => <div className="menu-subtype" key={item.name}><div><b>{item.name}</b><small>{item.detail}</small></div><span>{item.price}</span><button onClick={() => scrollToBooking(item.name)} aria-label={`Book ${item.name}`}><ArrowRight size={16} /></button></div>)}</div>}</div>; })}</div></section>}
+        {menuOpen && <section className="menu-timeline" id="menu"><div className="section-shell menu-heading"><div><SectionLabel>Our complete menu</SectionLabel><h2>Choose your<br /><em>experience.</em></h2></div><div className="menu-heading-side"><p>Start with a main service type. Click any category to reveal its subtypes, details and starting prices.</p><button className="menu-close" onClick={() => { setMenuOpen(false); setOpenMenuCategory(null); }}>Close menu <X size={15} /></button></div></div><div className="menu-category-grid">{menuCategories.map((category) => { const Icon = category.icon; const isOpen = openMenuCategory === category.name; return <div className={`menu-category ${isOpen ? "menu-category-open" : ""}`} key={category.name}><button className="menu-category-trigger" onClick={() => setOpenMenuCategory(isOpen ? null : category.name)} aria-expanded={isOpen}><span className="menu-category-icon"><Icon size={20} /></span><span><b>{category.name}</b><small>{category.description}</small></span><ChevronDown size={18} /></button>{isOpen && <div className="menu-subtypes">{category.items.map((item) => <div className="menu-subtype" key={item.name}><div><b>{item.name}</b><small>{item.detail}</small></div><span>{item.price}</span><button onClick={() => selectBookingService(item.name)} aria-label={`Book ${item.name}`}><ArrowRight size={16} /></button></div>)}</div>}</div>; })}</div></section>}
 
         <section className="visual-story section-shell">
           <div className="visual-story-copy"><SectionLabel>In our chair</SectionLabel><h2>The details<br />make the <em>difference.</em></h2><p>Fresh colour. Clean lines. A little time to exhale. This is your sign to make the appointment.</p><button className="button button-dark" onClick={() => scrollToBooking()}>Book your reset <ArrowRight size={17} /></button></div>
@@ -207,7 +240,7 @@ export default function Home() {
 
         <section className="booking-section section-shell" ref={bookingRef} id="booking">
           <div className="booking-intro"><SectionLabel>Make it yours</SectionLabel><h2>Ready when<br /><em>you are.</em></h2><p>Tell us what you’re thinking and we’ll help shape the rest. Requests are confirmed personally over WhatsApp.</p><div className="booking-contact"><a href={`tel:${phone.replace(/\s/g, "")}`}><Phone size={16} /> {phone}</a><a href={whatsappHref} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Chat on WhatsApp</a></div></div>
-          <div className="booking-card">{submitted ? <div className="booking-success"><div className="success-icon"><Check size={24} /></div><SectionLabel>Request received</SectionLabel><h3>We’ll take it from here.</h3><p>Your preferred appointment details are ready. Tap below to send them directly to our team on WhatsApp.</p><a className="button button-dark" href={whatsappHref} target="_blank" rel="noreferrer">Continue on WhatsApp <ArrowRight size={17} /></a><button className="reset-link" onClick={() => setSubmitted(false)}>Edit request</button></div> : <form onSubmit={handleSubmit}><div className="form-heading"><span>01</span><div><h3>Let’s find your time.</h3><p>We’ll reply with availability and a little guidance.</p></div></div><label>Your name<input required name="name" placeholder="e.g. Ananya" /></label><div className="form-row"><label>Phone number<input required name="phone" type="tel" placeholder="98765 43210" /></label><label>Service<select name="service" value={selectedService} onChange={(event) => setSelectedService(event.target.value)}>{["Precision cut & finish", ...menuCategories.flatMap((category) => category.items.map((item) => item.name))].map((serviceName) => <option key={serviceName}>{serviceName}</option>)}</select></label></div><div className="form-row"><label>Preferred date<input required name="date" type="date" /></label><label>Preferred time<select name="time" defaultValue="Anytime works"><option>Anytime works</option><option>Morning · 10:30–1:00</option><option>Afternoon · 1:00–4:00</option><option>Evening · 4:00–7:30</option></select></label></div><label>Anything we should know? <span className="optional">Optional</span><textarea name="note" placeholder="Tell us about your hair, an event, or a look you love…" rows={3} /></label><button className="button button-copper form-submit" type="submit">Request an appointment <ArrowRight size={17} /></button><p className="form-note"><Clock3 size={14} /> Usually replies within 30 minutes during open hours.</p></form>}</div>
+          <div className="booking-card">{submitted ? <div className="booking-success"><div className="success-icon"><Check size={24} /></div><SectionLabel>Request received</SectionLabel><h3>We’ll take it from here.</h3><p>Your preferred appointment details are ready. Tap below to send them directly to our team on WhatsApp.</p><a className="button button-dark" href={whatsappHref} target="_blank" rel="noreferrer">Continue on WhatsApp <ArrowRight size={17} /></a><button className="reset-link" onClick={() => setSubmitted(false)}>Edit request</button></div> : <form onSubmit={handleSubmit}><div className="form-heading"><span>01</span><div><h3>Build your appointment.</h3><p>Choose your service, stylist, date and time. We’ll confirm on WhatsApp.</p></div></div><div className="selected-services-panel"><span>Selected services</span><div>{selectedServices.map((serviceName) => <button type="button" key={serviceName} onClick={() => setSelectedService(serviceName)}>{serviceName} <X size={12} /></button>)}</div></div><label>Your name<input required name="name" placeholder="e.g. Ananya" /></label><div className="form-row"><label>Phone number<input required name="phone" type="tel" placeholder="98765 43210" /></label><label>Service<select name="service" value={selectedService} onChange={(event) => setSelectedService(event.target.value)}>{["Precision cut & finish", ...menuCategories.flatMap((category) => category.items.map((item) => item.name))].map((serviceName) => <option key={serviceName}>{serviceName}</option>)}</select></label></div><div className="form-row"><label>Preferred stylist<select name="provider" value={selectedProvider} onChange={(event) => setSelectedProvider(event.target.value)}>{providers.map((provider) => <option key={provider}>{provider}</option>)}</select></label><label>Preferred date<input required name="date" type="date" /></label></div><label>Preferred time<select name="time" defaultValue="Anytime works">{appointmentTimes.map((time) => <option key={time}>{time}</option>)}</select></label><label>Anything we should know? <span className="optional">Optional</span><textarea name="note" placeholder="Tell us about your hair, an event, or a look you love…" rows={3} /></label><button className="button button-copper form-submit" type="submit">Request an appointment <ArrowRight size={17} /></button><p className="form-note"><Clock3 size={14} /> Usually replies within 30 minutes during open hours.</p></form>}</div>
         </section>
 
         <section className="visit-section" id="visit"><div className="section-shell visit-grid"><div className="map-panel"><div className="clean-map" aria-label="Stylized map showing the salon location"><div className="map-block map-block-a" /><div className="map-block map-block-b" /><div className="map-block map-block-c" /><svg className="map-roads" viewBox="0 0 800 640" aria-hidden="true"><path d="M-40 170 C150 130 230 255 382 208 S620 98 840 142" /><path d="M-60 435 C130 382 210 505 350 445 S610 320 860 375" /><path d="M260 -30 C295 145 228 250 332 380 S438 560 458 690" /><path d="M622 -40 C558 110 626 228 530 340 S525 530 620 680" /><path className="map-road-major" d="M-45 304 C120 270 270 318 416 300 S665 270 845 292" /></svg><div className="map-label map-label-1">Ulhasnagar</div><div className="map-label map-label-2">Sai Mannat</div><div className="map-label map-label-3">Jai Baba Dham</div><div className="map-label map-label-4">near Talwalkars</div><div className="map-location"><span className="map-location-pulse" /><span className="map-pin"><MapPin size={18} fill="currentColor" /></span><div><strong>The Creative</strong><small>Hair Solutions</small></div></div><div className="map-scale"><span /> 200 m</div></div><div className="map-overlay"><span><MapPin size={15} /> You’re close</span><a href={mapsHref} target="_blank" rel="noreferrer">Get directions <ArrowRight size={15} /></a></div></div><div className="visit-copy"><SectionLabel>Find us</SectionLabel><h2>Drop in for<br /><em>good hair.</em></h2><p>Shop No. 1, Bismillah Juice Center, Sai Mannat, Gym, besides, opposite Jai Baba Dham, near Talwalkars, Ulhasnagar, Maharashtra 421002</p><div className="hours"><div><span>Monday — Sunday</span><strong>10:30 am — 8:30 pm</strong></div><div><span>Walk-ins</span><strong>Welcome when available</strong></div></div><a className="button button-dark" href={mapsHref} target="_blank" rel="noreferrer">Open in Google Maps <MapPin size={16} /></a></div></div></section>

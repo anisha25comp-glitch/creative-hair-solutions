@@ -1,0 +1,6 @@
+Reference URL: https://www.aoneunisexsalon.in/
+Verified interaction pattern: hero has Book your appointment, See the menu, Call, Locate us, Full packages; Our Store opens a separate store view.
+Menu structure: main category cards (Hair & Styling, Hair Colour, Hair Treatments, Spa & Massage, Nails & Beauty, Men's Grooming, Release & Renew), then category subtype tabs/list with numbered services and prices; clicking services adds them to appointment request.
+Booking flow: selected services summary, provider choice (Any available provider plus named team members), date, half-hour time slots from 9:00 AM through 8:30 PM, name, phone, optional email, payment mode, note, WhatsApp handoff.
+Store flow: separate store page with a top banner, curated product heading, All products/Hair care/Skin care filters, product search, wishlist buttons, Add to bag buttons, and floating Cart with count.
+Source page inspected on 2026-09-21 via browser and fetch. The exact A One site is the reference; Creative Hair Solutions data should replace A One branding/contact details.
