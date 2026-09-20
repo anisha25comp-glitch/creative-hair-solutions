@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1789931249221,
+      "tag": "0000_curvy_emma_frost",
+      "breakpoints": true
+    }
+  ]
+}
