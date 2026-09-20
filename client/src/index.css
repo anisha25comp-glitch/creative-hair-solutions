@@ -657,3 +657,21 @@ h1, h2, h3, h4, strong, b { font-weight: 700; }
   .action-grid { padding-inline: 16px; }
   .action-grid > * { min-height: 64px; }
 }
+
+/* Final spacing and staff login polish */
+.luxury-hero-copy { margin-top: 27px; }
+.action-grid { max-width: 920px; }
+.action-grid > * { min-height: 76px; }
+.staff-login-shell { display: grid; place-items: center; min-height: 100vh; padding: 24px; background: radial-gradient(circle at 70% 15%, #6e4735 0, transparent 35%), #241510; }
+.staff-login-card { display: flex; align-items: center; flex-direction: column; width: min(100%, 460px); padding: 52px 42px 44px; border: 1px solid rgba(218,161,125,.3); background: linear-gradient(145deg, rgba(73,43,31,.95), rgba(34,19,14,.98)); box-shadow: 0 28px 80px rgba(0,0,0,.34); color: #fffaf5; text-align: center; }
+.staff-login-mark { display: grid; place-items: center; width: 68px; height: 68px; margin-bottom: 25px; border: 1px solid #d39a73; border-radius: 50%; color: #e0ad89; font-family: "Cormorant Garamond", serif; font-size: 25px; font-weight: 700; letter-spacing: -.08em; }
+.staff-login-card h1 { margin-top: 16px; color: #fffaf5; font-family: "Cormorant Garamond", serif; font-size: 56px; font-weight: 700; line-height: .82; }
+.staff-login-card p { max-width: 315px; margin-top: 20px; color: rgba(255,245,235,.72); font-size: 13px; line-height: 1.7; }
+.staff-login-button { width: 100%; margin-top: 27px; background: #c78760 !important; color: #241510 !important; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.staff-login-button:hover { background: #e0ad89 !important; }
+.staff-login-back { margin-top: 22px; color: #d39a73; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+@media (max-width: 680px) {
+  .luxury-hero-copy { margin-top: 18px; }
+  .action-grid { max-width: none; }
+  .staff-login-card { padding: 42px 24px 34px; }
+}
