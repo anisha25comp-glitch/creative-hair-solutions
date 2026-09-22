@@ -155,6 +155,15 @@ export default function Home() {
     scrollToBooking(serviceName);
   };
 
+  const openMenuForService = (serviceName: string) => {
+    const category = menuCategories.find((item) => item.items.some((service) => service.name === serviceName));
+    setMenuOpen(true);
+    setOpenMenuCategory(category?.name ?? null);
+    setSelectedService(serviceName);
+    setSelectedServices((current) => current.includes(serviceName) ? current : [...current, serviceName]);
+    window.setTimeout(() => document.getElementById("menu")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
+  };
+
   const toggleWishlist = (productName: string) => {
     setWishlist((current) => current.includes(productName) ? current.filter((name) => name !== productName) : [...current, productName]);
   };
@@ -189,10 +198,8 @@ export default function Home() {
           <a href="#visit" onClick={() => setMobileOpen(false)}>Visit us</a>
           <a href="/store"><ShoppingBag size={14} /> Store</a>
           <a href="https://www.instagram.com/thecreativesalondombivli/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={15} /></a>
-          <button className="nav-book-mobile" onClick={() => scrollToBooking()}>Book a visit <ArrowRight size={15} /></button>
         </nav>
         <details className="more-menu"><summary aria-label="More options"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="/admin">Staff login / Admin</a><a href="#reviews">Reviews</a><a href="#visit">Contact & location</a></div></details>
-        <button className="header-book" onClick={() => scrollToBooking()}>Book a visit <ArrowRight size={15} /></button>
         <button className="mobile-toggle" onClick={() => setMobileOpen((value) => !value)} aria-label={mobileOpen ? "Close menu" : "Open menu"}>
           {mobileOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
@@ -204,10 +211,9 @@ export default function Home() {
           <div className="luxury-hero-content section-shell">
             <div className="luxury-hero-topline"><span>THE CREATIVE</span><span>HAIR SOLUTIONS · FAMILY SALON</span></div>
             <div className="luxury-hero-copy"><SectionLabel light>Salon & beauty</SectionLabel><h1>Where beauty<br /><em>meets craft.</em></h1><p>Premium hair, beauty and grooming experiences, crafted around you.</p></div>
+          <section className="first-page-actions hero-action-dock" aria-label="Quick salon actions"><div className="section-shell action-grid"><button onClick={() => scrollToBooking()}><span className="action-icon"><CalendarDays size={20} /></span><span><b>Appointment</b><small>Reserve your time</small></span><ArrowRight size={16} /></button><button onClick={() => setMenuOpen(true)}><span className="action-icon"><Scissors size={20} /></span><span><b>See the menu</b><small>Browse every service</small></span><ArrowRight size={16} /></button><a href={`tel:${phone.replace(/\s/g, "")}`}><span className="action-icon"><Phone size={20} /></span><span><b>Call the salon</b><small>{phone}</small></span><ArrowRight size={16} /></a><a href="#visit"><span className="action-icon"><MapPin size={20} /></span><span><b>Locate us</b><small>Ulhasnagar, Maharashtra</small></span><ArrowRight size={16} /></a><a href="#services"><span className="action-icon"><Sparkles size={20} /></span><span><b>Full packages</b><small>Hair · beauty · care</small></span><ArrowRight size={16} /></a></div></section>
           </div>
         </section>
-
-        <section className="first-page-actions" aria-label="Quick salon actions"><div className="section-shell action-grid"><button onClick={() => scrollToBooking()}><span className="action-icon"><CalendarDays size={20} /></span><span><b>Appointment</b><small>Reserve your time</small></span><ArrowRight size={16} /></button><button onClick={() => setMenuOpen(true)}><span className="action-icon"><Scissors size={20} /></span><span><b>See the menu</b><small>Browse every service</small></span><ArrowRight size={16} /></button><a href={`tel:${phone.replace(/\s/g, "")}`}><span className="action-icon"><Phone size={20} /></span><span><b>Call the salon</b><small>{phone}</small></span><ArrowRight size={16} /></a><a href="#visit"><span className="action-icon"><MapPin size={20} /></span><span><b>Locate us</b><small>Ulhasnagar, Maharashtra</small></span><ArrowRight size={16} /></a><a href="#services"><span className="action-icon"><Sparkles size={20} /></span><span><b>Full packages</b><small>Hair · beauty · care</small></span><ArrowRight size={16} /></a></div></section>
 
         <section className="ticker" aria-label="Salon services">
           <div className="ticker-track"><span>Cut · Colour · Care</span><i>✳</i><span>Modern beauty, made personal</span><i>✳</i><span>Cut · Colour · Care</span><i>✳</i><span>Modern beauty, made personal</span></div>
@@ -216,7 +222,7 @@ export default function Home() {
         <section className="services-section section-shell" id="services">
           <div className="section-topline"><div><SectionLabel>Signature services</SectionLabel><h2>Come for the<br /><em>feeling.</em> Stay for the hair.</h2></div><p className="section-aside">A considered edit of the things we do best, with room for a little magic in between.</p></div>
           <div className="service-filters" role="tablist" aria-label="Filter services">{categories.map((category) => <button key={category} className={activeCategory === category ? "filter-active" : ""} onClick={() => setActiveCategory(category)} role="tab" aria-selected={activeCategory === category}>{category}</button>)}</div>
-          <div className="service-grid">{filteredServices.map((service) => <article className="service-card" key={service.name}><div className="service-card-top"><span className="service-tag">{service.tag}</span><span className="service-price">{service.price}</span></div><h3>{service.name}</h3><p>{service.description}</p><button className="service-arrow" onClick={() => selectBookingService(service.name)} aria-label={`Book ${service.name}`}><ArrowRight size={18} /></button></article>)}</div>
+          <div className="service-grid">{filteredServices.map((service) => <article className="service-card" key={service.name} onClick={() => openMenuForService(service.name)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") openMenuForService(service.name); }} role="button" tabIndex={0}><div className="service-card-top"><span className="service-tag">{service.tag}</span><span className="service-price">{service.price}</span></div><h3>{service.name}</h3><p>{service.description}</p><button className="service-arrow" onClick={(event) => { event.stopPropagation(); openMenuForService(service.name); }} aria-label={`View ${service.name} in the full menu`}><ArrowRight size={18} /></button></article>)}</div>
           <div className="service-footer"><span>Not sure what you need?</span><button className="outline-button" onClick={() => scrollToBooking()}> <ArrowRight size={16} /></button></div>
         </section>
 
