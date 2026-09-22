@@ -61,32 +61,58 @@ const reviews = [
 const categories = ["All", "Hair", "Colour", "Occasion", "Care"];
 
 const menuCategories = [
-  { name: "Hair", description: "Cuts, styling and treatments", icon: Scissors, items: [
-    { name: "Hair wash & haircut", detail: "Consultation, wash, cut and finish", price: "from ₹300" },
-    { name: "Blowdry & hair styling", detail: "Volume, movement and polished finish", price: "from ₹300" },
-    { name: "Keratin, smoothening & rebonding", detail: "Smoother, more manageable hair", price: "from ₹1,800" },
-    { name: "Hair spa & repair", detail: "Nourishing care for dry or stressed hair", price: "from ₹700" },
+  { name: "Hair & styling", description: "Cuts, wash, finish and everyday styling", icon: Scissors, items: [
+    { name: "Women’s hair wash & haircut", detail: "Consultation, wash, cut and finish", price: "₹700", duration: "60 min" },
+    { name: "Men’s hair wash & haircut", detail: "Clean cut, wash and styled finish", price: "₹300", duration: "45 min" },
+    { name: "Girls’ haircut & wash", detail: "For girls 3 years and above", price: "from ₹300", duration: "45 min" },
+    { name: "Hair trimming", detail: "A clean refresh without changing your length", price: "from ₹500", duration: "30 min" },
+    { name: "Hair blowdry", detail: "Smooth, glossy volume and movement", price: "₹300", duration: "30 min" },
+    { name: "Hair wash with blowdry", detail: "Wash, dry and polished finish", price: "₹400", duration: "45 min" },
   ]},
-  { name: "Colour", description: "Balayage, highlights and shine", icon: Sparkles, items: [
-    { name: "Advance colour & balayage", detail: "Dimensional colour with soft grow-out", price: "from ₹3,000" },
-    { name: "Global hair colour", detail: "A rich, even colour refresh", price: "from ₹1,500" },
-    { name: "Highlights & fashion colour", detail: "Light-catching accents made for you", price: "by consultation" },
+  { name: "Hair colour", description: "Global colour, highlights and fashion tones", icon: Sparkles, items: [
+    { name: "Global hair colour", detail: "A rich, even colour refresh", price: "₹800", duration: "120 min" },
+    { name: "Inoa colour without ammonia", detail: "Gentler colour with a luminous finish", price: "₹900", duration: "120 min" },
+    { name: "Highlights", detail: "Light-catching accents placed for you", price: "₹1,500", duration: "150 min" },
+    { name: "Fashion streak", detail: "A statement accent or a softer pop of colour", price: "₹200", duration: "60 min" },
+    { name: "Advance colour & balayage", detail: "Dimensional colour with soft grow-out", price: "from ₹3,000", duration: "180 min" },
   ]},
-  { name: "Beauty", description: "Skin, nails, waxing and care", icon: Star, items: [
-    { name: "Threading & face cleanup", detail: "Brows, upper lip and finishing care", price: "from ₹30" },
-    { name: "Body waxing", detail: "Comfortable, careful hair removal", price: "from ₹250" },
-    { name: "Acne treatments & facials", detail: "Skin-focused care for a clearer glow", price: "from ₹600" },
-    { name: "Manicure, pedicure & nail art", detail: "Hands and feet finished with care", price: "from ₹500" },
+  { name: "Hair treatments", description: "Repair, smoothening, spa and scalp care", icon: Sparkles, items: [
+    { name: "Loreal hair spa", detail: "Nourishing care for dry or stressed hair", price: "₹500", duration: "60 min" },
+    { name: "Hair spa by length", detail: "Personalised nourishment based on hair length", price: "from ₹800", duration: "75 min" },
+    { name: "Smoothening", detail: "Smoother, more manageable hair", price: "₹1,800", duration: "180 min" },
+    { name: "Straightening", detail: "A sleek, polished finish", price: "₹2,000", duration: "180 min" },
+    { name: "Keratin Pro Advance", detail: "Frizz control, softness and shine", price: "₹2,500", duration: "180 min" },
+    { name: "Dandruff treatment", detail: "Targeted scalp and hair-care ritual", price: "from ₹1,000", duration: "75 min" },
+    { name: "Hair fall treatment", detail: "Scalp-focused care for weakened hair", price: "from ₹1,500", duration: "75 min" },
+    { name: "Absolut Repair Molecular", detail: "Advanced repair for damaged lengths", price: "₹3,000", duration: "90 min" },
   ]},
-  { name: "Occasion", description: "Makeup, bridal and special looks", icon: CalendarDays, items: [
-    { name: "Bridal makeup", detail: "A complete, camera-ready bridal look", price: "by consultation" },
-    { name: "Party & occasion makeup", detail: "Polished beauty for your big plans", price: "from ₹2,000" },
-    { name: "Occasion hair styling", detail: "Updos, waves and statement finishes", price: "from ₹800" },
+  { name: "Beauty & skin", description: "Nails, threading, waxing and skin care", icon: Star, items: [
+    { name: "Threading & face cleanup", detail: "Brows, upper lip and finishing care", price: "from ₹30", duration: "30 min" },
+    { name: "Acne treatment & facial", detail: "Skin-focused care for a clearer glow", price: "from ₹600", duration: "60 min" },
+    { name: "Body waxing", detail: "Comfortable, careful hair removal", price: "from ₹250", duration: "45 min" },
+    { name: "Manicure", detail: "Hands shaped, cleaned and finished", price: "from ₹500", duration: "45 min" },
+    { name: "Pedicure", detail: "A careful reset for tired feet", price: "from ₹700", duration: "60 min" },
+    { name: "Nail art", detail: "A considered finish for your occasion", price: "by consultation", duration: "45 min" },
   ]},
-  { name: "Men's grooming", description: "Hair, beard and everyday polish", icon: UserRound, items: [
-    { name: "Men's haircut & styling", detail: "A clean cut shaped around your routine", price: "from ₹250" },
-    { name: "Beard trim & styling", detail: "Defined lines and a considered finish", price: "from ₹150" },
-    { name: "Men's hair colour", detail: "Natural coverage or a new direction", price: "from ₹800" },
+  { name: "Makeup & occasion", description: "Bridal, party and camera-ready looks", icon: CalendarDays, items: [
+    { name: "Party makeup", detail: "Polished beauty for your big plans", price: "₹1,500–₹2,000", duration: "90 min" },
+    { name: "Engagement makeup", detail: "A complete, camera-ready engagement look", price: "₹5,000", duration: "150 min" },
+    { name: "Bridal makeup", detail: "A complete bridal look, planned around you", price: "₹10,000", duration: "180 min" },
+    { name: "Reception makeup", detail: "Statement beauty for your reception", price: "₹9,000", duration: "150 min" },
+    { name: "Groom makeup", detail: "Natural grooming and camera-ready finish", price: "₹5,000", duration: "90 min" },
+    { name: "Hair do", detail: "Waves, updos and occasion styling", price: "₹700", duration: "60 min" },
+  ]},
+  { name: "Men’s grooming", description: "Hair, beard, massage and everyday polish", icon: UserRound, items: [
+    { name: "Hair wash regular", detail: "A clean refresh before your cut or styling", price: "₹100", duration: "20 min" },
+    { name: "Beard clean shave", detail: "A close, comfortable finish", price: "₹120", duration: "20 min" },
+    { name: "Beard style", detail: "Defined shape and considered lines", price: "₹150", duration: "30 min" },
+    { name: "Haircut boys under 10", detail: "A comfortable cut for younger guests", price: "₹200", duration: "30 min" },
+    { name: "Head massage with oil", detail: "Relaxing oil massage, no steam", price: "₹250", duration: "30 min" },
+    { name: "Head massage with oil & steam", detail: "Oil massage with a warm steam finish", price: "₹350", duration: "30 min" },
+    { name: "Aroma oil & steam", detail: "A longer restorative scalp ritual", price: "₹450", duration: "60 min" },
+    { name: "Beard colour", detail: "Natural coverage and a sharper finish", price: "₹300", duration: "45 min" },
+    { name: "Men’s hair colour", detail: "Natural coverage or a new direction", price: "₹800", duration: "90 min" },
+    { name: "Manicure & pedicure", detail: "Hands and feet finished with care", price: "from ₹500", duration: "75 min" },
   ]},
 ];
 
@@ -149,6 +175,12 @@ export default function Home() {
     setMobileOpen(false);
   };
 
+  const openFullMenu = () => {
+    setMenuOpen(true);
+    setMobileOpen(false);
+    window.setTimeout(() => document.getElementById("menu")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
+  };
+
   const selectBookingService = (serviceName: string) => {
     setSelectedService(serviceName);
     setSelectedServices((current) => current.includes(serviceName) ? current : [...current, serviceName]);
@@ -193,7 +225,7 @@ export default function Home() {
         </a>
         <nav className={`main-nav ${mobileOpen ? "main-nav-open" : ""}`} aria-label="Main navigation">
           <a href="#services" onClick={() => setMobileOpen(false)}>Services</a>
-          <button className="nav-text-button" onClick={() => { setMenuOpen(true); setMobileOpen(false); }}>Full menu</button>
+          <button className="nav-text-button" onClick={openFullMenu}>Full menu</button>
           <a href="#reviews" onClick={() => setMobileOpen(false)}>Reviews</a>
           <a href="#visit" onClick={() => setMobileOpen(false)}>Visit us</a>
           <a href="/store"><ShoppingBag size={14} /> Store</a>
@@ -211,7 +243,7 @@ export default function Home() {
           <div className="luxury-hero-content section-shell">
             <div className="luxury-hero-topline"><span>THE CREATIVE</span><span>HAIR SOLUTIONS · FAMILY SALON</span></div>
             <div className="luxury-hero-copy"><SectionLabel light>Salon & beauty</SectionLabel><h1>Where beauty<br /><em>meets craft.</em></h1><p>Premium hair, beauty and grooming experiences, crafted around you.</p></div>
-          <section className="first-page-actions hero-action-dock" aria-label="Quick salon actions"><div className="section-shell action-grid"><button onClick={() => scrollToBooking()}><span className="action-icon"><CalendarDays size={20} /></span><span><b>Appointment</b><small>Reserve your time</small></span><ArrowRight size={16} /></button><button onClick={() => setMenuOpen(true)}><span className="action-icon"><Scissors size={20} /></span><span><b>See the menu</b><small>Browse every service</small></span><ArrowRight size={16} /></button><a href={`tel:${phone.replace(/\s/g, "")}`}><span className="action-icon"><Phone size={20} /></span><span><b>Call the salon</b><small>{phone}</small></span><ArrowRight size={16} /></a><a href="#visit"><span className="action-icon"><MapPin size={20} /></span><span><b>Locate us</b><small>Ulhasnagar, Maharashtra</small></span><ArrowRight size={16} /></a><a href="#services"><span className="action-icon"><Sparkles size={20} /></span><span><b>Full packages</b><small>Hair · beauty · care</small></span><ArrowRight size={16} /></a></div></section>
+          <section className="first-page-actions hero-action-dock" aria-label="Quick salon actions"><div className="section-shell action-grid"><button onClick={() => scrollToBooking()}><span className="action-icon"><CalendarDays size={20} /></span><span><b>Appointment</b><small>Reserve your time</small></span><ArrowRight size={16} /></button><button onClick={openFullMenu}><span className="action-icon"><Scissors size={20} /></span><span><b>See the menu</b><small>Browse every service</small></span><ArrowRight size={16} /></button><a href={`tel:${phone.replace(/\s/g, "")}`}><span className="action-icon"><Phone size={20} /></span><span><b>Call the salon</b><small>{phone}</small></span><ArrowRight size={16} /></a><a href="#visit"><span className="action-icon"><MapPin size={20} /></span><span><b>Locate us</b><small>Ulhasnagar, Maharashtra</small></span><ArrowRight size={16} /></a><button onClick={openFullMenu}><span className="action-icon"><Sparkles size={20} /></span><span><b>Full packages</b><small>Hair · beauty · care</small></span><ArrowRight size={16} /></button></div></section>
           </div>
         </section>
 
@@ -226,7 +258,7 @@ export default function Home() {
           <div className="service-footer"><span>Not sure what you need?</span><button className="outline-button" onClick={() => scrollToBooking()}> <ArrowRight size={16} /></button></div>
         </section>
 
-        {menuOpen && <section className="menu-timeline" id="menu"><div className="section-shell menu-heading"><div><SectionLabel>Our complete menu</SectionLabel><h2>Choose your<br /><em>experience.</em></h2></div><div className="menu-heading-side"><p>Start with a main service type. Click any category to reveal its subtypes, details and starting prices.</p><button className="menu-close" onClick={() => { setMenuOpen(false); setOpenMenuCategory(null); }}>Close menu <X size={15} /></button></div></div><div className="menu-category-grid">{menuCategories.map((category) => { const Icon = category.icon; const isOpen = openMenuCategory === category.name; return <div className={`menu-category ${isOpen ? "menu-category-open" : ""}`} key={category.name}><button className="menu-category-trigger" onClick={() => setOpenMenuCategory(isOpen ? null : category.name)} aria-expanded={isOpen}><span className="menu-category-icon"><Icon size={20} /></span><span><b>{category.name}</b><small>{category.description}</small></span><ChevronDown size={18} /></button>{isOpen && <div className="menu-subtypes">{category.items.map((item) => <div className="menu-subtype" key={item.name}><div><b>{item.name}</b><small>{item.detail}</small></div><span>{item.price}</span><button onClick={() => selectBookingService(item.name)} aria-label={`Book ${item.name}`}><ArrowRight size={16} /></button></div>)}</div>}</div>; })}</div></section>}
+        {menuOpen && <section className="menu-timeline" id="menu"><div className="section-shell menu-heading"><div><SectionLabel>Our complete menu</SectionLabel><h2>Choose your<br /><em>experience.</em></h2></div><div className="menu-heading-side"><p>Choose a category to see every service, exact starting price, estimated duration, and add it to your appointment request.</p><button className="menu-close" onClick={() => { setMenuOpen(false); setOpenMenuCategory(null); }}>Close menu <X size={15} /></button></div></div><div className="menu-category-grid">{menuCategories.map((category) => { const Icon = category.icon; const isOpen = openMenuCategory === category.name; return <div className={`menu-category ${isOpen ? "menu-category-open" : ""}`} key={category.name}><button className="menu-category-trigger" onClick={() => setOpenMenuCategory(isOpen ? null : category.name)} aria-expanded={isOpen}><span className="menu-category-icon"><Icon size={20} /></span><span><b>{category.name}</b><small>{category.description} · {category.items.length} services</small></span><ChevronDown size={18} /></button>{isOpen && <div className="menu-subtypes">{category.items.map((item) => <div className="menu-subtype" key={item.name}><div><b>{item.name}</b><small>{item.detail}</small><span className="menu-duration"><Clock3 size={12} /> {item.duration}</span></div><strong>{item.price}</strong><button onClick={() => selectBookingService(item.name)} aria-label={`Select ${item.name}`}><span>Select</span><ArrowRight size={14} /></button></div>)}</div>}</div>; })}</div></section>}
 
         <section className="booking-section section-shell" ref={bookingRef} id="booking">
           <div className="booking-intro"><SectionLabel>Make it yours</SectionLabel><h2>Ready when<br /><em>you are.</em></h2><p>Tell us what you’re thinking and we’ll help shape the rest. Requests are confirmed personally over WhatsApp.</p><div className="booking-contact"><a href={`tel:${phone.replace(/\s/g, "")}`}><Phone size={16} /> {phone}</a><a href={whatsappHref} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Chat on WhatsApp</a></div></div>
