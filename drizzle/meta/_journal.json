@@ -15,6 +15,13 @@
       "when": 1790187161318,
       "tag": "0001_thick_shaman",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1790187976190,
+      "tag": "0002_noisy_colleen_wing",
+      "breakpoints": true
     }
   ]
 }
