@@ -8,6 +8,13 @@
       "when": 1789931249221,
       "tag": "0000_curvy_emma_frost",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1790187161318,
+      "tag": "0001_thick_shaman",
+      "breakpoints": true
     }
   ]
 }
