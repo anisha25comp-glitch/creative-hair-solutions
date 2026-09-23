@@ -231,7 +231,7 @@ export default function Home() {
           <a href="/store"><ShoppingBag size={14} /> Store</a>
           <a href="https://www.instagram.com/thecreativesalondombivli/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={15} /></a>
         </nav>
-        <details className="more-menu"><summary aria-label="More options"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="/admin">Staff login / Admin</a><a href="#reviews">Reviews</a><a href="#visit">Contact & location</a></div></details>
+        <details className="more-menu"><summary aria-label="More options"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="/staff">Staff login</a><a href="/admin">Admin login</a><a href="#reviews">Reviews</a><a href="#visit">Contact & location</a></div></details>
         <button className="mobile-toggle" onClick={() => setMobileOpen((value) => !value)} aria-label={mobileOpen ? "Close menu" : "Open menu"}>
           {mobileOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
