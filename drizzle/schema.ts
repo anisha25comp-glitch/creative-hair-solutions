@@ -30,6 +30,7 @@ export const bills = mysqlTable("bills", {
   id: int("id").autoincrement().primaryKey(),
   appointmentId: int("appointmentId"),
   customerName: varchar("customerName", { length: 160 }).notNull(),
+  phone: varchar("phone", { length: 32 }),
   branch: mysqlEnum("branch", ["ulhasnagar", "badlapur"]).default("ulhasnagar").notNull(),
   itemSummary: text("itemSummary").notNull(),
   amount: int("amount").notNull(),
