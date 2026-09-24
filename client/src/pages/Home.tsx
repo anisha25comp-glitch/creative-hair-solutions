@@ -10,7 +10,6 @@ import {
   Clock3,
   Instagram,
   MapPin,
-  Menu,
   MessageCircle,
   MoreHorizontal,
   Phone,
@@ -38,7 +37,7 @@ const whatsappHref = "https://wa.me/919222631384";
 const mapsHref = "https://www.google.com/maps/search/?api=1&query=The+Creative+Hair+Solutions+Unisex+Salon+Ulhasnagar";
 
 const images = {
-  hero: "/manus-storage/creative-hero_a74c00da.jpg",
+  hero: "/creative-hero.jpg",
   detail: "/manus-storage/creative-detail_c5c422ac.jpg",
   styling: "/manus-storage/creative-styling_a4cabbe1.jpg",
   interior: "/manus-storage/creative-interior_920f61c1.jpg",
@@ -332,7 +331,6 @@ function SectionLabel({ children, light = false }: { children: React.ReactNode; 
 
 export default function Home() {
   const bookingRef = useRef<HTMLElement>(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openMenuCategory, setOpenMenuCategory] = useState<string | null>(null);
   const [menuGender, setMenuGender] = useState<"women" | "men">("women");
@@ -368,12 +366,10 @@ export default function Home() {
   const scrollToBooking = (serviceName?: string) => {
     if (serviceName) setSelectedService(serviceName);
     bookingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    setMobileOpen(false);
   };
 
   const openFullMenu = () => {
     setMenuOpen(true);
-    setMobileOpen(false);
     window.setTimeout(() => document.getElementById("menu")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
   };
 
@@ -438,21 +434,15 @@ export default function Home() {
             <span>Hair Solutions · Family Salon</span>
           </span>
         </a>
-        <nav className={`main-nav ${mobileOpen ? "main-nav-open" : ""}`} aria-label="Main navigation">
-          <a href="#services" onClick={() => setMobileOpen(false)}>Services</a>
+        <nav className="main-nav" aria-label="Main navigation">
+          <a href="#services">Services</a>
           <button className="nav-text-button" onClick={openFullMenu}>Full menu</button>
-          <a href="#reviews" onClick={() => setMobileOpen(false)}>Reviews</a>
-          <a href="#visit" onClick={() => setMobileOpen(false)}>Visit us</a>
+          <a href="#reviews">Reviews</a>
+          <a href="#visit">Visit us</a>
           <a href="/store"><ShoppingBag size={14} /> Store</a>
-          <span className="mobile-portal-divider" aria-hidden="true">Salon workspace</span>
-          <a className="mobile-portal-link" href="/staff" onClick={() => setMobileOpen(false)}>Staff login</a>
-          <a className="mobile-portal-link" href="/admin" onClick={() => setMobileOpen(false)}>Admin login</a>
           <a href="https://www.instagram.com/thecreativesalondombivli/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={15} /></a>
         </nav>
-        <details className="more-menu"><summary aria-label="More options"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="/staff">Staff login</a><a href="/admin">Admin login</a><a href="#reviews">Reviews</a><a href="#visit">Contact & location</a></div></details>
-        <button className="mobile-toggle" onClick={() => setMobileOpen((value) => !value)} aria-label={mobileOpen ? "Close menu" : "Open menu"}>
-          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <details className="more-menu"><summary aria-label="Open navigation menu"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="#services">Services</a><button type="button" onClick={openFullMenu}>Full menu</button><a href="#reviews">Reviews</a><a href="#visit">Visit us</a><a href="/store">Store</a><a href="/staff">Staff login</a><a href="/admin">Admin login</a><a href="https://www.instagram.com/thecreativesalondombivli/" target="_blank" rel="noreferrer">Instagram</a></div></details>
       </header>
 
       <main id="top">

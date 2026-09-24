@@ -574,8 +574,8 @@ blockquote { border-color: rgba(236,195,165,.24); background: linear-gradient(14
 .more-menu summary::-webkit-details-marker { display: none; }
 .more-menu summary:hover { background: rgba(255,255,255,.12); }
 .more-menu-popover { position: absolute; z-index: 40; top: 42px; right: 0; display: flex; flex-direction: column; min-width: 160px; padding: 7px; border: 1px solid rgba(255,255,255,.18); background: #2f1d18; box-shadow: 0 16px 30px rgba(25,12,7,.24); }
-.more-menu-popover a { padding: 10px 11px; color: rgba(255,250,246,.72); font-size: 11px; }
-.more-menu-popover a:hover { background: rgba(255,255,255,.09); color: #fffaf6; }
+.more-menu-popover a, .more-menu-popover button { display: block; width: 100%; padding: 10px 11px; background: transparent; color: rgba(255,250,246,.72); font-size: 11px; text-align: left; }
+.more-menu-popover a:hover, .more-menu-popover button:hover { background: rgba(255,255,255,.09); color: #fffaf6; }
 .nav-text-button { background: transparent; color: inherit; font-size: inherit; letter-spacing: inherit; text-transform: inherit; }
 
 @media (max-width: 900px) {
@@ -593,7 +593,7 @@ blockquote { border-color: rgba(236,195,165,.24); background: linear-gradient(14
   .staff-form-row { grid-template-columns: 1fr; }
   .staff-table { overflow-x: auto; }
   .staff-table-head, .staff-table-row { min-width: 690px; }
-  .more-menu { display: none; }
+  .more-menu { display: block; }
 }
 
 /* Stronger text hierarchy requested for final polish */
@@ -949,6 +949,7 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 .module-action-grid button { display: flex; align-items: center; justify-content: space-between; min-height: 56px; padding: 14px 16px; border: 1px solid #e2d2c5; background: #fffdf9; color: #59473d; font-size: 11px; font-weight: 800; text-align: left; }
 .module-action-grid button svg { color: #b67859; }
 .module-action-grid button:hover { border-color: #b67859; background: #f7eee7; }
+.module-action-grid button.active { border-color: #a76343; background: #eadccc; color: #38231c; box-shadow: inset 3px 0 0 #a76343; }
 .module-empty { display: grid; place-items: center; min-height: 220px; margin-top: 14px; padding: 24px; border: 1px dashed #d8c5b8; color: #b67859; text-align: center; }
 .module-empty h3 { margin-top: 12px; color: #59473d; font-family: "Cormorant Garamond", serif; font-size: 26px; }
 .module-empty p { max-width: 420px; margin-top: 8px; color: #9e897c; font-size: 12px; line-height: 1.6; }
@@ -985,7 +986,7 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 @media (max-width: 640px) { .gender-menu-switch { width: 100%; justify-content: space-between; } .gender-menu-switch button { flex: 1; } .gender-menu-switch span { padding-left: 4px; } .menu-category-trigger b { font-size: 16px; } .menu-subtype b { font-size: 14px; } .menu-subtype strong { font-size: 15px; } }
 
 /* Refined CHS brand mark and invoice controls */
-.logo-monogram { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid rgba(198,161,91,.82); border-radius: 50%; color: #f5f1e8; font-family: "Cormorant Garamond", serif; font-size: 14px; font-weight: 700; letter-spacing: -.08em; line-height: 1; box-shadow: inset 0 0 0 3px rgba(198,161,91,.12), 0 7px 20px rgba(0,0,0,.24); background: radial-gradient(circle at 30% 20%, rgba(198,161,91,.3), rgba(13,13,13,.72) 65%); }
+.logo-monogram { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid rgba(198,161,91,.82); border-radius: 50%; color: #f5f1e8; font-family: "Cormorant Garamond", serif; font-size: 14px; font-weight: 700; letter-spacing: -.08em; line-height: 1; box-shadow: inset 0 0 0 3px rgba(198,161,91,.12), 0 7px 20px rgba(0,0,0,.24); background: #000; }
 .invoice-actions { display: flex; flex-wrap: wrap; gap: 7px; min-width: 235px; }
 .invoice-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 32px; padding: 0 10px; border: 1px solid #c6a15b; border-radius: 4px; background: transparent; color: #3c2a24; font-size: 10px; font-weight: 800; letter-spacing: .03em; cursor: pointer; transition: transform .16s ease, background .16s ease, color .16s ease; }
 .invoice-button:hover { transform: translateY(-1px); background: #c6a15b; color: #0d0d0d; }
@@ -1056,10 +1057,13 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
   .menu-category-trigger b { font-size: 15px; }
 }
 
-/* Keep both workspace entry points available from the phone navigation. */
-.mobile-portal-link, .mobile-portal-divider { display: none; }
-@media (max-width: 900px) {
-  .mobile-portal-divider { display: block; padding: 12px 11px 5px; color: rgba(255,250,246,.5); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
-  .mobile-portal-link { display: block; }
-}
 .staff-login-help { display: block; max-width: 330px; margin: 16px auto 0; color: rgba(255,250,246,.62); font-size: 11px; line-height: 1.5; }
+
+/* Compact, high-contrast expanded service rows. */
+.menu-subtypes { padding: 3px 18px 6px; }
+.menu-subtype { gap: 12px; padding: 9px 0; }
+.menu-subtype > div { gap: 2px; }
+.menu-subtype b { font-size: 14px; font-weight: 900; line-height: 1.15; }
+.menu-subtype small { margin-top: 0; font-size: 11px; font-weight: 700; line-height: 1.25; }
+.menu-duration { margin-top: 3px; font-size: 10px !important; font-weight: 800 !important; }
+.menu-subtype > strong { font-size: 15px; font-weight: 900; }
