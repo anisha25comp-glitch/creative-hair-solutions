@@ -3,13 +3,14 @@ import { z } from "zod";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, publicProcedure, router, staffProcedure } from "./_core/trpc";
-import { createAppointment, createBill, createClient, createEnquiry, listAppointments, listBills, listClients, listEnquiries, updateAppointmentStatus, updateEnquiryStatus } from "./db";
+import { createAppointment, createBill, createClient, createEnquiry, createFeedback, listAppointments, listBills, listClients, listEnquiries, listFeedback, updateAppointmentStatus, updateEnquiryStatus, updateFeedbackStatus } from "./db";
 
 const appointmentStatus = z.enum(["booked", "confirmed", "completed", "cancelled"]);
 const paymentMethod = z.enum(["cash", "upi", "card", "pending"]);
 const enquiryStatus = z.enum(["pending", "contacted", "converted", "lost"]);
 const branch = z.enum(["ulhasnagar", "badlapur"]);
 const gender = z.enum(["female", "male", "other"]);
+const feedbackStatus = z.enum(["new", "reviewed", "resolved"]);
 
 export const appRouter = router({
   system: systemRouter,
@@ -28,6 +29,9 @@ export const appRouter = router({
     updateEnquiryStatus: staffProcedure.input(z.object({ id: z.number().int().positive(), leadStatus: enquiryStatus })).mutation(({ input }) => updateEnquiryStatus(input.id, input.leadStatus)),
     clients: staffProcedure.query(() => listClients()),
     createClient: staffProcedure.input(z.object({ clientName: z.string().min(2), contactNumber: z.string().min(7), email: z.string().email().optional().or(z.literal("")), branch, source: z.string().optional(), assignedTo: z.string().optional(), service: z.string().optional(), gender: gender.optional() })).mutation(({ input }) => createClient({ ...input, email: input.email || null })),
+    feedback: staffProcedure.query(() => listFeedback()),
+    createFeedback: staffProcedure.input(z.object({ clientName: z.string().min(2), contactNumber: z.string().optional(), branch, rating: z.number().int().min(1).max(5), comments: z.string().min(2), status: feedbackStatus.default("new") })).mutation(({ input, ctx }) => createFeedback({ ...input, createdBy: ctx.user.id })),
+    updateFeedbackStatus: staffProcedure.input(z.object({ id: z.number().int().positive(), status: feedbackStatus })).mutation(({ input }) => updateFeedbackStatus(input.id, input.status)),
   }),
   admin: router({
     promoteStaff: adminProcedure.input(z.object({ openId: z.string().min(1) })).mutation(() => ({ success: true })),

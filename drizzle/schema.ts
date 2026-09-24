@@ -70,6 +70,18 @@ export const clients = mysqlTable("clients", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+export const feedback = mysqlTable("feedback", {
+  id: int("id").autoincrement().primaryKey(),
+  clientName: varchar("clientName", { length: 160 }).notNull(),
+  contactNumber: varchar("contactNumber", { length: 32 }),
+  branch: mysqlEnum("branch", ["ulhasnagar", "badlapur"]).default("ulhasnagar").notNull(),
+  rating: int("rating").notNull(),
+  comments: text("comments").notNull(),
+  status: mysqlEnum("status", ["new", "reviewed", "resolved"]).default("new").notNull(),
+  createdBy: int("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Appointment = typeof appointments.$inferSelect;
@@ -80,3 +92,5 @@ export type Enquiry = typeof enquiries.$inferSelect;
 export type InsertEnquiry = typeof enquiries.$inferInsert;
 export type Client = typeof clients.$inferSelect;
 export type InsertClient = typeof clients.$inferInsert;
+export type Feedback = typeof feedback.$inferSelect;
+export type InsertFeedback = typeof feedback.$inferInsert;

@@ -1,6 +1,6 @@
 import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { appointments, bills, clients, enquiries, InsertAppointment, InsertBill, InsertClient, InsertEnquiry, InsertUser, users } from "../drizzle/schema";
+import { appointments, bills, clients, enquiries, feedback, InsertAppointment, InsertBill, InsertClient, InsertEnquiry, InsertFeedback, InsertUser, users } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -35,3 +35,6 @@ export async function createEnquiry(data: InsertEnquiry) { const db = await getD
 export async function updateEnquiryStatus(id: number, leadStatus: "pending" | "contacted" | "converted" | "lost") { const db = await getDb(); if (!db) throw new Error("Database is not available"); await db.update(enquiries).set({ leadStatus }).where(eq(enquiries.id, id)); return { success: true } as const; }
 export async function listClients() { const db = await getDb(); if (!db) return []; return db.select().from(clients).orderBy(desc(clients.createdAt)).limit(200); }
 export async function createClient(data: InsertClient) { const db = await getDb(); if (!db) throw new Error("Database is not available"); const result = await db.insert(clients).values(data); return result[0].insertId; }
+export async function listFeedback() { const db = await getDb(); if (!db) return []; return db.select().from(feedback).orderBy(desc(feedback.createdAt)).limit(100); }
+export async function createFeedback(data: InsertFeedback) { const db = await getDb(); if (!db) throw new Error("Database is not available"); const result = await db.insert(feedback).values(data); return result[0].insertId; }
+export async function updateFeedbackStatus(id: number, status: "new" | "reviewed" | "resolved") { const db = await getDb(); if (!db) throw new Error("Database is not available"); await db.update(feedback).set({ status }).where(eq(feedback.id, id)); return { success: true } as const; }
