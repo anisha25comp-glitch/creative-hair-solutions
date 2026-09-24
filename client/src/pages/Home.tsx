@@ -272,7 +272,7 @@ export default function Home() {
     <div className="salon-site">
       <header className="site-header">
         <a className="brand" href="#top" aria-label="The Creative Hair Solutions home">
-          <img className="site-logo-image" src="/manus-storage/chs-logo_1251f9ec.png" alt="The Creative Hair Solutions logo" />
+          <span className="logo-monogram" aria-hidden="true">CHS</span>
           <span className="brand-copy">
             <strong>THE CREATIVE</strong>
             <span>Hair Solutions · Family Salon</span>
