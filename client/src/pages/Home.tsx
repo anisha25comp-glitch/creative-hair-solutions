@@ -444,6 +444,9 @@ export default function Home() {
           <a href="#reviews" onClick={() => setMobileOpen(false)}>Reviews</a>
           <a href="#visit" onClick={() => setMobileOpen(false)}>Visit us</a>
           <a href="/store"><ShoppingBag size={14} /> Store</a>
+          <span className="mobile-portal-divider" aria-hidden="true">Salon workspace</span>
+          <a className="mobile-portal-link" href="/staff" onClick={() => setMobileOpen(false)}>Staff login</a>
+          <a className="mobile-portal-link" href="/admin" onClick={() => setMobileOpen(false)}>Admin login</a>
           <a href="https://www.instagram.com/thecreativesalondombivli/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={15} /></a>
         </nav>
         <details className="more-menu"><summary aria-label="More options"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="/staff">Staff login</a><a href="/admin">Admin login</a><a href="#reviews">Reviews</a><a href="#visit">Contact & location</a></div></details>
