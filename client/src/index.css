@@ -993,3 +993,65 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 .invoice-print { border-color: #8d7768; }
 .bill-history-row { align-items: center; }
 @media (max-width: 800px) { .invoice-actions { min-width: 0; } .staff-table-head span:last-child { display: none; } .bill-history-row { grid-template-columns: 1fr 1fr; gap: 12px; } .bill-history-row .invoice-actions { grid-column: 1 / -1; } }
+
+
+/* Gender-aware menu refinement */
+.menu-timeline {
+  background: #eadccc;
+  color: #2f1d18;
+  border-top: 1px solid #d2b69d;
+  border-bottom: 1px solid #d2b69d;
+}
+.menu-heading h2,
+.menu-heading h2 em { color: #2f1d18; }
+.menu-heading h2 em { color: #a76343; }
+.menu-heading-side p { color: #6f5447; }
+.menu-close { border: 1px solid #b67859; background: #f6ede3; color: #6a4233; }
+.menu-close:hover { background: #b67859; color: #fffaf6; }
+.menu-category-grid { padding-bottom: 92px; }
+.menu-category {
+  border-color: #d2b69d;
+  background: #f7eee4;
+  box-shadow: 0 12px 26px rgba(83, 51, 35, .09);
+}
+.menu-category:hover,
+.menu-category-open { border-color: #a76343; background: #f9f1e8; }
+.menu-category-trigger { color: #2f1d18; cursor: pointer; }
+.menu-category-trigger b {
+  color: #2f1d18;
+  font-family: "DM Sans", sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+.menu-category-trigger small { color: #765d50; font-weight: 600; }
+.menu-category-trigger > svg { color: #a76343; }
+.menu-category-icon { border-color: #b67859; color: #a76343; }
+.menu-subtypes { border-top-color: #d8c0aa; }
+.menu-subtype { border-bottom-color: #e2cdbb; }
+.menu-subtype b { color: #2f1d18; font-size: 14px; font-weight: 800; }
+.menu-subtype small { color: #765d50; }
+.menu-duration { color: #8a6b5b; }
+.menu-subtype > strong { color: #a76343; }
+.menu-subtype > button { border-color: #b67859; color: #8e5439; }
+.menu-subtype > button:hover { background: #b67859; color: #fffaf6; }
+.gender-menu-switch {
+  border-color: #c9a98e;
+  background: #efe0cf;
+}
+.gender-menu-switch span { color: #745849; }
+.gender-menu-switch button { color: #745849; }
+.gender-menu-switch button:hover,
+.gender-menu-switch .gender-active {
+  border-color: #a76343;
+  background: #b67859;
+  color: #fffaf6;
+  box-shadow: 0 8px 20px rgba(167, 99, 67, .2);
+}
+
+@media (max-width: 680px) {
+  .menu-timeline { padding-top: 78px; }
+  .menu-category-trigger { padding: 19px 17px; }
+  .menu-category-trigger b { font-size: 15px; }
+}
