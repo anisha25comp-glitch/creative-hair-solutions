@@ -25,7 +25,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
 }
 
 export async function getUserByOpenId(openId: string) { const db = await getDb(); if (!db) return undefined; const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1); return result[0]; }
-export async function listAppointments(from: Date, to: Date) { const db = await getDb(); if (!db) return []; return db.select().from(appointments).where(and(gte(appointments.appointmentAt, from), lte(appointments.appointmentAt, to))).orderBy(appointments.appointmentAt); }
+export async function listAppointments(from: Date, to: Date, branch?: "ulhasnagar" | "badlapur") { const db = await getDb(); if (!db) return []; const filters = [gte(appointments.appointmentAt, from), lte(appointments.appointmentAt, to)]; if (branch) filters.push(eq(appointments.branch, branch)); return db.select().from(appointments).where(and(...filters)).orderBy(appointments.appointmentAt); }
 export async function createAppointment(data: InsertAppointment) { const db = await getDb(); if (!db) throw new Error("Database is not available"); const result = await db.insert(appointments).values(data); return result[0].insertId; }
 export async function updateAppointmentStatus(id: number, status: "booked" | "confirmed" | "completed" | "cancelled") { const db = await getDb(); if (!db) throw new Error("Database is not available"); await db.update(appointments).set({ status, updatedAt: new Date() }).where(eq(appointments.id, id)); return { success: true } as const; }
 export async function listBills() { const db = await getDb(); if (!db) return []; return db.select().from(bills).orderBy(desc(bills.createdAt)).limit(50); }

@@ -22,7 +22,7 @@ export const appRouter = router({
     create: publicProcedure.input(z.object({ customerName: z.string().min(2), phone: z.string().min(7), branch, service: z.string().min(2), appointmentAt: z.coerce.date(), notes: z.string().optional() })).mutation(({ input }) => createAppointment({ ...input, status: "booked" })),
   }),
   staff: router({
-    appointments: staffProcedure.input(z.object({ from: z.coerce.date(), to: z.coerce.date(), branch: branch.optional() })).query(({ input }) => listAppointments(input.from, input.to)),
+    appointments: staffProcedure.input(z.object({ from: z.coerce.date(), to: z.coerce.date(), branch: branch.optional() })).query(({ input }) => listAppointments(input.from, input.to, input.branch)),
     createAppointment: staffProcedure.input(z.object({ customerName: z.string().min(2), phone: z.string().min(7), branch, service: z.string().min(2), appointmentAt: z.coerce.date(), notes: z.string().optional(), status: appointmentStatus.default("booked") })).mutation(({ input, ctx }) => createAppointment({ ...input, createdBy: ctx.user.id })),
     updateAppointmentStatus: staffProcedure.input(z.object({ id: z.number().int().positive(), status: appointmentStatus })).mutation(({ input }) => updateAppointmentStatus(input.id, input.status)),
     bills: staffProcedure.query(() => listBills()),
