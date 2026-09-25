@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import {
@@ -345,6 +345,7 @@ export default function Home() {
   const [storeFilter, setStoreFilter] = useState("All products");
   const [storeQuery, setStoreQuery] = useState("");
   const [wishlist, setWishlist] = useState<string[]>([]);
+  const moreMenuRef = useRef<HTMLDetailsElement>(null);
   const createPublicAppointment = trpc.publicBooking.create.useMutation();
 
   const filteredStoreItems = useMemo(() => storeItems.filter((product) => {
@@ -385,6 +386,13 @@ export default function Home() {
     setSelectedServices((current) => current.includes(serviceName) ? current : [...current, serviceName]);
     scrollToBooking(serviceName);
   };
+  const removeSelectedService = (serviceName: string) => {
+    setSelectedServices((current) => {
+      const next = current.filter((name) => name !== serviceName);
+      setSelectedService(next[0] ?? "Precision cut & finish");
+      return next;
+    });
+  };
 
   const openMenuForService = (serviceName: string) => {
     const category = menuCategories.find((item) => item.items.some((service) => service.name === serviceName));
@@ -421,6 +429,13 @@ export default function Home() {
       description: "We’ll confirm your preferred slot over WhatsApp shortly.",
     });
   };
+  useEffect(() => {
+    const closeMenuOnOutsideClick = (event: MouseEvent) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target as Node)) moreMenuRef.current.removeAttribute("open");
+    };
+    document.addEventListener("click", closeMenuOnOutsideClick);
+    return () => document.removeEventListener("click", closeMenuOnOutsideClick);
+  }, []);
 
   return (
     <div className="salon-site">
@@ -439,10 +454,10 @@ export default function Home() {
           <a href="#visit">Visit us</a>
           <a href="/staff">Staff</a>
           <a href="/admin">Admin</a>
-          <a className="header-icon-link" href="https://www.instagram.com/thecreativesalondombivli/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={16} /></a>
-          <a className="header-icon-link" href="/store" aria-label="Our store"><ShoppingBag size={16} /></a>
+          <a className="header-icon-link" href="https://www.instagram.com/the_creative_unisex_salon?utm_source=qr&stkn=MW53aHN6Njl2cWo4Zw%3D%3D" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={16} /></a>
+          <a className="header-icon-link header-store-link" href="/store" aria-label="Our store"><ShoppingBag size={16} /><span>Our store</span></a>
         </nav>
-        <details className="more-menu"><summary aria-label="Open navigation menu"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="#services">Services</a><button type="button" onClick={openFullMenu}>Full menu</button><a href="#reviews">Reviews</a><a href="#visit">Visit us</a><a href="/store">Our store</a><a href="/staff">Staff sign in</a><a href="/admin">Admin sign in</a><a href="https://www.instagram.com/thecreativesalondombivli/" target="_blank" rel="noreferrer">Instagram</a></div></details>
+        <details ref={moreMenuRef} className="more-menu"><summary aria-label="Open navigation menu"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="#services">Services</a><button type="button" onClick={openFullMenu}>Full menu</button><a href="#reviews">Reviews</a><a href="#visit">Visit us</a><a href="/store">Our store</a><a href="/staff">Staff sign in</a><a href="/admin">Admin sign in</a><a href="https://www.instagram.com/the_creative_unisex_salon?utm_source=qr&stkn=MW53aHN6Njl2cWo4Zw%3D%3D" target="_blank" rel="noreferrer">Instagram</a></div></details>
       </header>
 
       <main id="top">
@@ -470,7 +485,7 @@ export default function Home() {
 
         <section className="booking-section section-shell" ref={bookingRef} id="booking">
           <div className="booking-intro"><SectionLabel>Make it yours</SectionLabel><h2>Ready when<br /><em>you are.</em></h2><p>Tell us what you’re thinking and we’ll help shape the rest. Requests are confirmed personally over WhatsApp.</p><div className="booking-contact"><a href={`tel:${phone.replace(/\s/g, "")}`}><Phone size={16} /> {phone}</a><a href={whatsappHref} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Chat on WhatsApp</a></div></div>
-          <div className="booking-card">{submitted ? <div className="booking-success"><div className="success-icon"><Check size={24} /></div><SectionLabel>Request received</SectionLabel><h3>We’ll take it from here.</h3><p>Your preferred appointment details are ready. WhatsApp opened with your booking details. Tap below if you need to reopen it.</p><a className="button button-dark" href={submittedWhatsAppHref} target="_blank" rel="noreferrer">Continue on WhatsApp <ArrowRight size={17} /></a><button className="reset-link" onClick={() => setSubmitted(false)}>Edit request</button></div> : <form onSubmit={handleSubmit}><div className="form-heading"><span>01</span><div><h3>Build your appointment.</h3><p>Choose your service, stylist, date and time. We’ll confirm on WhatsApp.</p></div></div><div className="selected-services-panel"><span>Selected services</span><div>{selectedServices.map((serviceName) => <button type="button" key={serviceName} onClick={() => setSelectedService(serviceName)}>{serviceName} <X size={12} /></button>)}</div></div><label>Your name<input required name="name" placeholder="e.g. Ananya" /></label><div className="form-row"><label>Phone number<input required name="phone" type="tel" placeholder="98765 43210" /></label><label>Service<select name="service" value={selectedService} onChange={(event) => setSelectedService(event.target.value)}>{["Precision cut & finish", ...menuCategories.flatMap((category) => category.items.map((item) => item.name))].map((serviceName) => <option key={serviceName}>{serviceName}</option>)}</select></label></div><div className="form-row"><label>Preferred stylist<select name="provider" value={selectedProvider} onChange={(event) => setSelectedProvider(event.target.value)}>{providers.map((provider) => <option key={provider}>{provider}</option>)}</select></label><label>Preferred date<input required name="date" type="date" /></label></div><label>Preferred branch<select value={bookingBranch} onChange={(event) => setBookingBranch(event.target.value as "ulhasnagar" | "badlapur")}><option value="ulhasnagar">Ulhasnagar</option><option value="badlapur">Badlapur</option></select></label><label>Preferred time<select name="time" defaultValue="Anytime works">{appointmentTimes.map((time) => <option key={time}>{time}</option>)}</select></label><label>Anything we should know? <span className="optional">Optional</span><textarea name="note" placeholder="Tell us about your hair, an event, or a look you love…" rows={3} /></label><button className="button button-copper form-submit" type="submit">Request an appointment <ArrowRight size={17} /></button><p className="form-note"><Clock3 size={14} /> Usually replies within 30 minutes during open hours.</p></form>}</div>
+          <div className="booking-card">{submitted ? <div className="booking-success"><div className="success-icon"><Check size={24} /></div><SectionLabel>Request received</SectionLabel><h3>We’ll take it from here.</h3><p>Your preferred appointment details are ready. WhatsApp opened with your booking details. Tap below if you need to reopen it.</p><a className="button button-dark" href={submittedWhatsAppHref} target="_blank" rel="noreferrer">Continue on WhatsApp <ArrowRight size={17} /></a><button className="reset-link" onClick={() => setSubmitted(false)}>Edit request</button></div> : <form onSubmit={handleSubmit}><div className="form-heading"><span>01</span><div><h3>Build your appointment.</h3><p>Choose your service, stylist, date and time. We’ll confirm on WhatsApp.</p></div></div><div className="selected-services-panel"><span>Selected services</span><div>{selectedServices.length ? selectedServices.map((serviceName) => <button type="button" key={serviceName} onClick={() => removeSelectedService(serviceName)}>{serviceName} <X size={12} /></button>) : <small>No extra services selected</small>}</div></div><label>Your name<input required name="name" placeholder="e.g. Ananya" /></label><div className="form-row"><label>Phone number<input required name="phone" type="tel" placeholder="98765 43210" /></label><label>Service<select name="service" value={selectedService} onChange={(event) => setSelectedService(event.target.value)}>{["Precision cut & finish", ...menuCategories.flatMap((category) => category.items.map((item) => item.name))].map((serviceName) => <option key={serviceName}>{serviceName}</option>)}</select></label></div><div className="form-row"><label>Preferred stylist<select name="provider" value={selectedProvider} onChange={(event) => setSelectedProvider(event.target.value)}>{providers.map((provider) => <option key={provider}>{provider}</option>)}</select></label><label>Preferred date<input required name="date" type="date" /></label></div><label>Preferred branch<select value={bookingBranch} onChange={(event) => setBookingBranch(event.target.value as "ulhasnagar" | "badlapur")}><option value="ulhasnagar">Ulhasnagar</option><option value="badlapur">Badlapur</option></select></label><label>Preferred time<select name="time" defaultValue="Anytime works">{appointmentTimes.map((time) => <option key={time}>{time}</option>)}</select></label><label>Anything we should know? <span className="optional">Optional</span><textarea name="note" placeholder="Tell us about your hair, an event, or a look you love…" rows={3} /></label><button className="button button-copper form-submit" type="submit">Request an appointment <ArrowRight size={17} /></button><p className="form-note"><Clock3 size={14} /> Usually replies within 30 minutes during open hours.</p></form>}</div>
         </section>
 
         <section className="review-section" id="reviews">

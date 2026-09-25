@@ -973,6 +973,8 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 .site-header-logo { width: 42px; height: 42px; border-radius: 50%; background: #090909; padding: 5px; object-fit: contain; }
 .header-icon-link { display: inline-grid !important; place-items: center; width: 30px; height: 30px; border: 1px solid rgba(255,255,255,.42); border-radius: 50%; }
 .header-icon-link:hover { background: #c6a15b; color: #0d0d0d; border-color: #c6a15b; }
+.header-store-link { width: auto; min-width: 31px; gap: 6px; padding: 0 9px; border-radius: 999px; }
+.header-store-link span { font-size: 10px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; }
 .menu-inline-switch { display: flex; align-items: center; gap: 5px; width: fit-content; margin-bottom: 14px; padding: 4px; border: 1px solid rgba(167,99,67,.35); background: rgba(255,255,255,.35); }
 .menu-inline-switch span { padding: 0 7px; color: #765d50; font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .menu-inline-switch button { padding: 7px 11px; border: 1px solid transparent; background: transparent; color: #765d50; font-size: 10px; font-weight: 800; text-transform: uppercase; }
@@ -1081,7 +1083,7 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 .menu-subtype b { font-size: 14px; font-weight: 900; line-height: 1.15; }
 .menu-subtype small { margin-top: 0; font-size: 11px; font-weight: 700; line-height: 1.25; }
 .menu-duration { margin-top: 3px; font-size: 10px !important; font-weight: 800 !important; }
-.menu-category-grid { gap: 8px; }
+.menu-category-grid { gap: 4px !important; }
 
 @media (max-width: 680px) {
   .site-header { gap: 8px; }
@@ -1091,12 +1093,18 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
   .site-header .brand-copy span { font-size: 12px; }
   .site-header .main-nav { position: static; display: flex; align-items: center; flex-direction: row; gap: 6px; margin: 0 0 0 auto; padding: 0; border: 0; background: transparent; box-shadow: none; }
   .site-header .main-nav > a:not(.header-icon-link), .site-header .main-nav > button { display: none; }
-  .site-header .header-icon-link { display: inline-grid !important; width: 31px; height: 31px; }
+  .site-header .header-icon-link { display: inline-flex !important; width: 31px; height: 31px; }
+  .site-header .header-store-link { width: auto; }
+  .site-header .header-store-link span { display: inline; }
   .site-header .more-menu { display: block; }
 }
 
 @media (max-width: 680px) {
-  .menu-category-grid { gap: 8px; margin-top: 28px; }
+  .menu-category-grid { gap: 4px !important; margin-top: 20px; }
   .menu-category-trigger { padding: 14px 17px; }
 }
 .menu-subtype > strong { font-size: 15px; font-weight: 900; }
+.menu-category-trigger b, .menu-subtype b, .menu-subtype > strong, .service-card h3, .booking-card h3 { color: #050505 !important; font-weight: 950 !important; }
+.menu-category-trigger small, .menu-subtype small, .service-card p, .selected-services-panel small { color: #111 !important; font-weight: 800 !important; }
+.selected-services-panel button { border-color: #050505; background: #050505; color: #fff; font-weight: 900; }
+.selected-services-panel button:hover { background: #2b2b2b; }
