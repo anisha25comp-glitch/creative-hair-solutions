@@ -390,8 +390,6 @@ export default function Home() {
     const category = menuCategories.find((item) => item.items.some((service) => service.name === serviceName));
     setMenuOpen(true);
     setOpenMenuCategory(category?.name ?? null);
-    setSelectedService(serviceName);
-    setSelectedServices((current) => current.includes(serviceName) ? current : [...current, serviceName]);
     window.setTimeout(() => document.getElementById("menu")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
   };
 

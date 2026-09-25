@@ -1084,6 +1084,18 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 .menu-category-grid { gap: 8px; }
 
 @media (max-width: 680px) {
+  .site-header { gap: 8px; }
+  .site-header .brand { min-width: 0; }
+  .site-header .brand-copy { max-width: 132px; }
+  .site-header .brand-copy strong { font-size: 9px; }
+  .site-header .brand-copy span { font-size: 12px; }
+  .site-header .main-nav { position: static; display: flex; align-items: center; flex-direction: row; gap: 6px; margin: 0 0 0 auto; padding: 0; border: 0; background: transparent; box-shadow: none; }
+  .site-header .main-nav > a:not(.header-icon-link), .site-header .main-nav > button { display: none; }
+  .site-header .header-icon-link { display: inline-grid !important; width: 31px; height: 31px; }
+  .site-header .more-menu { display: block; }
+}
+
+@media (max-width: 680px) {
   .menu-category-grid { gap: 8px; margin-top: 28px; }
   .menu-category-trigger { padding: 14px 17px; }
 }
