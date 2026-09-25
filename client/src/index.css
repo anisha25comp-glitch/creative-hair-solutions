@@ -1118,3 +1118,11 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 .selected-services-panel button span { color: #fff; font-weight: 900; }
 .selected-services-panel button strong { color: #e6bf67; font-weight: 950; white-space: nowrap; }
 .selected-services-panel button:hover { background: #2b2b2b; }
+.staff-workspace { font-size: 15px; }
+.staff-topbar h1 { font-size: clamp(32px, 4vw, 54px); font-weight: 950; letter-spacing: -.04em; }
+.staff-topbar p { max-width: 700px; font-size: 15px; line-height: 1.55; }
+.staff-panel-heading h2 { font-size: 25px; font-weight: 950; }
+.staff-stats article { min-height: 150px; padding: 25px; }
+.staff-stats article strong { font-size: 42px; font-weight: 950; }
+.staff-stats article span, .staff-stats article small { font-size: 13px; }
+.admin-launch-grid a { min-height: 64px; font-size: 15px; font-weight: 900; }

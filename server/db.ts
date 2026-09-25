@@ -2,8 +2,14 @@ import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { appointments, bills, clients, enquiries, feedback, InsertAppointment, InsertBill, InsertClient, InsertEnquiry, InsertFeedback, InsertUser, users } from "../drizzle/schema";
 import { ENV } from "./_core/env";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 
 let _db: ReturnType<typeof drizzle> | null = null;
+const localAppointmentsPath = path.resolve(process.cwd(), "server/data/appointments.json");
+type LocalAppointment = { id: number; customerName: string; phone: string; branch: "ulhasnagar" | "badlapur"; service: string; appointmentAt: string; notes?: string | null; status: "booked" | "confirmed" | "completed" | "cancelled"; createdBy?: number | null; createdAt: string; updatedAt: string };
+async function readLocalAppointments(): Promise<LocalAppointment[]> { try { return JSON.parse(await readFile(localAppointmentsPath, "utf8")) as LocalAppointment[]; } catch { return []; } }
+async function writeLocalAppointments(rows: LocalAppointment[]) { await mkdir(path.dirname(localAppointmentsPath), { recursive: true }); await writeFile(localAppointmentsPath, JSON.stringify(rows, null, 2)); }
 
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
@@ -25,9 +31,9 @@ export async function upsertUser(user: InsertUser): Promise<void> {
 }
 
 export async function getUserByOpenId(openId: string) { const db = await getDb(); if (!db) return undefined; const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1); return result[0]; }
-export async function listAppointments(from: Date, to: Date, branch?: "ulhasnagar" | "badlapur") { const db = await getDb(); if (!db) return []; const filters = [gte(appointments.appointmentAt, from), lte(appointments.appointmentAt, to)]; if (branch) filters.push(eq(appointments.branch, branch)); return db.select().from(appointments).where(and(...filters)).orderBy(appointments.appointmentAt); }
-export async function createAppointment(data: InsertAppointment) { const db = await getDb(); if (!db) throw new Error("Database is not available"); const result = await db.insert(appointments).values(data); return result[0].insertId; }
-export async function updateAppointmentStatus(id: number, status: "booked" | "confirmed" | "completed" | "cancelled") { const db = await getDb(); if (!db) throw new Error("Database is not available"); await db.update(appointments).set({ status, updatedAt: new Date() }).where(eq(appointments.id, id)); return { success: true } as const; }
+export async function listAppointments(from: Date, to: Date, branch?: "ulhasnagar" | "badlapur") { const db = await getDb(); if (!db) { const rows = await readLocalAppointments(); return rows.filter((row) => { const date = new Date(row.appointmentAt); return date >= from && date <= to && (!branch || row.branch === branch); }).sort((a, b) => new Date(a.appointmentAt).getTime() - new Date(b.appointmentAt).getTime()).map((row) => ({ ...row, appointmentAt: new Date(row.appointmentAt), createdAt: new Date(row.createdAt), updatedAt: new Date(row.updatedAt) })); } const filters = [gte(appointments.appointmentAt, from), lte(appointments.appointmentAt, to)]; if (branch) filters.push(eq(appointments.branch, branch)); return db.select().from(appointments).where(and(...filters)).orderBy(appointments.appointmentAt); }
+export async function createAppointment(data: InsertAppointment) { const db = await getDb(); if (!db) { const rows = await readLocalAppointments(); const now = new Date().toISOString(); const id = rows.reduce((max, row) => Math.max(max, row.id), 0) + 1; await writeLocalAppointments([...rows, { customerName: data.customerName, phone: data.phone, branch: data.branch!, service: data.service, appointmentAt: new Date(data.appointmentAt!).toISOString(), notes: data.notes, status: data.status ?? "booked", createdBy: data.createdBy, id, createdAt: now, updatedAt: now }]); return id; } const result = await db.insert(appointments).values(data); return result[0].insertId; }
+export async function updateAppointmentStatus(id: number, status: "booked" | "confirmed" | "completed" | "cancelled") { const db = await getDb(); if (!db) { const rows = await readLocalAppointments(); await writeLocalAppointments(rows.map((row) => row.id === id ? { ...row, status, updatedAt: new Date().toISOString() } : row)); return { success: true } as const; } await db.update(appointments).set({ status, updatedAt: new Date() }).where(eq(appointments.id, id)); return { success: true } as const; }
 export async function listBills() { const db = await getDb(); if (!db) return []; return db.select().from(bills).orderBy(desc(bills.createdAt)).limit(50); }
 export async function createBill(data: InsertBill) { const db = await getDb(); if (!db) throw new Error("Database is not available"); const result = await db.insert(bills).values(data); return result[0].insertId; }
 export async function listEnquiries() { const db = await getDb(); if (!db) return []; return db.select().from(enquiries).orderBy(desc(enquiries.createdAt)).limit(100); }
