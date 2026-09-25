@@ -2,8 +2,8 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
-import { startLogin } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
+import { trpc } from "@/lib/trpc";
 import { BarChart3, CalendarDays, ClipboardList, FileBarChart, FileText, LayoutDashboard, LogOut, Package, PanelLeft, ReceiptIndianRupee, Settings, ShoppingBag, Sparkles, UserRound, Users, WalletCards } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
@@ -42,11 +42,17 @@ const SIDEBAR_WIDTH_KEY = "sidebar-width";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarWidth, setSidebarWidth] = useState(() => { const saved = localStorage.getItem(SIDEBAR_WIDTH_KEY); return saved ? parseInt(saved, 10) : 280; });
-  const { loading, user } = useAuth();
+  const { loading, user, refresh } = useAuth();
   useEffect(() => { localStorage.setItem(SIDEBAR_WIDTH_KEY, sidebarWidth.toString()); }, [sidebarWidth]);
   if (loading) return <DashboardLayoutSkeleton />;
-  if (!user) { const isStaffPortal = window.location.pathname.startsWith("/staff"); return <div className="staff-login-shell"><div className="staff-login-card"><img className="staff-login-logo" src="/chs-logo.png" alt="The Creative Hair Solutions logo" /><span className="admin-kicker">The Creative · {isStaffPortal ? "Staff portal" : "Admin portal"}</span><h1>{isStaffPortal ? "Staff login" : "Admin login"}</h1><p>{isStaffPortal ? "Sign in to create appointments, generate bills and record client feedback." : "Sign in to manage branches, staff, reports, services and all salon settings."}</p><small className="staff-login-help">On a phone, use the menu button in the top-left to move between workspace sections.</small><Button onClick={() => startLogin()} size="lg" className="staff-login-button">Sign in as {isStaffPortal ? "staff" : "admin"}</Button><a className="staff-login-back" href="/">Return to salon website</a></div></div>; }
+  if (!user) { const isStaffPortal = window.location.pathname.startsWith("/staff"); return <LocalLoginForm isStaffPortal={isStaffPortal} onSuccess={refresh} />; }
   return <SidebarProvider style={{ "--sidebar-width": `${sidebarWidth}px` } as CSSProperties}><DashboardLayoutContent setSidebarWidth={setSidebarWidth}>{children}</DashboardLayoutContent></SidebarProvider>;
+}
+function LocalLoginForm({ isStaffPortal, onSuccess }: { isStaffPortal: boolean; onSuccess: () => Promise<unknown> }) {
+  const [username, setUsername] = useState(""); const [password, setPassword] = useState(""); const [error, setError] = useState("");
+  const login = trpc.auth.localLogin.useMutation({ onSuccess: async () => { setError(""); await onSuccess(); } });
+  const submit = async (event: React.FormEvent<HTMLFormElement>) => { event.preventDefault(); setError(""); try { await login.mutateAsync({ username, password }); } catch { setError("Invalid ID or password. Please check your details and try again."); } };
+  return <div className="staff-login-shell"><div className="staff-login-card"><img className="staff-login-logo" src="/chs-logo.png" alt="The Creative Hair Solutions logo" /><span className="admin-kicker">The Creative · {isStaffPortal ? "Staff portal" : "Admin portal"}</span><h1>{isStaffPortal ? "Staff login" : "Admin login"}</h1><p>{isStaffPortal ? "Sign in to create appointments, generate bills and record client feedback." : "Sign in to manage branches, staff, reports, services and all salon settings."}</p><form className="staff-login-form" onSubmit={submit}><label>User ID<input required autoComplete="username" value={username} onChange={(event) => setUsername(event.target.value)} placeholder={isStaffPortal ? "Staff ID" : "Admin ID"} /></label><label>Password<input required type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Password" /></label>{error && <p className="staff-login-error" role="alert">{error}</p>}<Button type="submit" size="lg" className="staff-login-button" disabled={login.isPending}>{login.isPending ? "Signing in…" : `Sign in as ${isStaffPortal ? "staff" : "admin"}`}</Button></form><a className="staff-login-back" href="/">Return to salon website</a></div></div>;
 }
 function DashboardLayoutContent({ children, setSidebarWidth }: { children: React.ReactNode; setSidebarWidth: (width: number) => void }) {
   const { user, logout } = useAuth(); const [location, setLocation] = useLocation(); const { state, toggleSidebar } = useSidebar(); const isCollapsed = state === "collapsed"; const [isResizing, setIsResizing] = useState(false); const sidebarRef = useRef<HTMLDivElement>(null); const isMobile = useIsMobile();

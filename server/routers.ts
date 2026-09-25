@@ -1,6 +1,7 @@
 import { COOKIE_NAME } from "@shared/const";
 import { z } from "zod";
 import { getSessionCookieOptions } from "./_core/cookies";
+import { clearLocalSession, createLocalSession, setLocalSession, verifyLocalCredentials } from "./_core/localAuth";
 import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, publicProcedure, router, staffProcedure } from "./_core/trpc";
 import { createAppointment, createBill, createClient, createEnquiry, createFeedback, listAppointments, listBills, listClients, listEnquiries, listFeedback, updateAppointmentStatus, updateEnquiryStatus, updateFeedbackStatus } from "./db";
@@ -16,7 +17,8 @@ export const appRouter = router({
   system: systemRouter,
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
-    logout: publicProcedure.mutation(({ ctx }) => { const cookieOptions = getSessionCookieOptions(ctx.req); ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 }); return { success: true } as const; }),
+    localLogin: publicProcedure.input(z.object({ username: z.string().min(1), password: z.string().min(1) })).mutation(async ({ input, ctx }) => { const role = verifyLocalCredentials(input.username, input.password); if (!role) throw new Error("Invalid sign-in details"); const token = await createLocalSession(role); setLocalSession(ctx.res, ctx.req, token); return { role } as const; }),
+    logout: publicProcedure.mutation(({ ctx }) => { const cookieOptions = getSessionCookieOptions(ctx.req); ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 }); clearLocalSession(ctx.res, ctx.req); return { success: true } as const; }),
   }),
   publicBooking: router({
     create: publicProcedure.input(z.object({ customerName: z.string().min(2), phone: z.string().min(7), branch, service: z.string().min(2), appointmentAt: z.coerce.date(), notes: z.string().optional() })).mutation(({ input }) => createAppointment({ ...input, status: "booked" })),
