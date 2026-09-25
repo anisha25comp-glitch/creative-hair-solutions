@@ -428,7 +428,7 @@ export default function Home() {
     <div className="salon-site">
       <header className="site-header">
         <a className="brand" href="#top" aria-label="The Creative Hair Solutions home">
-          <span className="logo-monogram" aria-hidden="true">CHS</span>
+          <img className="site-logo-image site-header-logo" src="/chs-logo.png" alt="The Creative Hair Solutions logo" />
           <span className="brand-copy">
             <strong>THE CREATIVE</strong>
             <span>Hair Solutions · Family Salon</span>
@@ -439,10 +439,12 @@ export default function Home() {
           <button className="nav-text-button" onClick={openFullMenu}>Full menu</button>
           <a href="#reviews">Reviews</a>
           <a href="#visit">Visit us</a>
-          <a href="/store"><ShoppingBag size={14} /> Store</a>
-          <a href="https://www.instagram.com/thecreativesalondombivli/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={15} /></a>
+          <a href="/staff">Staff</a>
+          <a href="/admin">Admin</a>
+          <a className="header-icon-link" href="https://www.instagram.com/thecreativesalondombivli/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={16} /></a>
+          <a className="header-icon-link" href="/store" aria-label="Our store"><ShoppingBag size={16} /></a>
         </nav>
-        <details className="more-menu"><summary aria-label="Open navigation menu"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="#services">Services</a><button type="button" onClick={openFullMenu}>Full menu</button><a href="#reviews">Reviews</a><a href="#visit">Visit us</a><a href="/store">Store</a><a href="/staff">Staff login</a><a href="/admin">Admin login</a><a href="https://www.instagram.com/thecreativesalondombivli/" target="_blank" rel="noreferrer">Instagram</a></div></details>
+        <details className="more-menu"><summary aria-label="Open navigation menu"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="#services">Services</a><button type="button" onClick={openFullMenu}>Full menu</button><a href="#reviews">Reviews</a><a href="#visit">Visit us</a><a href="/store">Our store</a><a href="/staff">Staff sign in</a><a href="/admin">Admin sign in</a><a href="https://www.instagram.com/thecreativesalondombivli/" target="_blank" rel="noreferrer">Instagram</a></div></details>
       </header>
 
       <main id="top">
