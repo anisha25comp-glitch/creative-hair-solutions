@@ -975,6 +975,8 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 .header-icon-link:hover { background: #c6a15b; color: #0d0d0d; border-color: #c6a15b; }
 .header-store-link { width: auto; min-width: 31px; gap: 6px; padding: 0 9px; border-radius: 999px; }
 .header-store-link span { font-size: 10px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; }
+.site-header .header-icon-link { width: 42px; height: 42px; font-size: 17px; }
+.site-header .header-store-link { min-width: 42px; padding: 0 12px; }
 .menu-inline-switch { display: flex; align-items: center; gap: 5px; width: fit-content; margin-bottom: 14px; padding: 4px; border: 1px solid rgba(167,99,67,.35); background: rgba(255,255,255,.35); }
 .menu-inline-switch span { padding: 0 7px; color: #765d50; font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .menu-inline-switch button { padding: 7px 11px; border: 1px solid transparent; background: transparent; color: #765d50; font-size: 10px; font-weight: 800; text-transform: uppercase; }
@@ -1093,8 +1095,8 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
   .site-header .brand-copy span { font-size: 12px; }
   .site-header .main-nav { position: static; display: flex; align-items: center; flex-direction: row; gap: 6px; margin: 0 0 0 auto; padding: 0; border: 0; background: transparent; box-shadow: none; }
   .site-header .main-nav > a:not(.header-icon-link), .site-header .main-nav > button { display: none; }
-  .site-header .header-icon-link { display: inline-flex !important; width: 31px; height: 31px; }
-  .site-header .header-store-link { width: auto; }
+  .site-header .header-icon-link { display: inline-flex !important; width: 40px; height: 40px; font-size: 18px; }
+  .site-header .header-store-link { width: auto; min-width: 40px; padding: 0 10px; }
   .site-header .header-store-link span { display: inline; }
   .site-header .more-menu { display: block; }
 }
