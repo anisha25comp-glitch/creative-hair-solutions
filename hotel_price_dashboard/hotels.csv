@@ -1,0 +1,21 @@
+hotel_name,destination,location,price_per_night,rating,category,amenities,max_guests
+The Park New Delhi,Delhi,Connaught Place,4200,4.3,Business,"WiFi · Breakfast · Gym · Workspace",3
+The Leela Palace,Delhi,Chanakyapuri,9800,4.8,Luxury,"WiFi · Pool · Spa · Restaurant",4
+Bloomrooms @ Janpath,Delhi,Janpath,3600,4.2,Budget,"WiFi · Breakfast · Air conditioning",2
+Taj Palace Mumbai,Mumbai,Colaba,8600,4.7,Luxury,"WiFi · Pool · Spa · Breakfast",4
+The Orchid Mumbai,Mumbai,Vile Parle,5100,4.4,Business,"WiFi · Airport shuttle · Gym",3
+Sea View Residency,Mumbai,Bandra West,2900,4.0,Budget,"WiFi · Breakfast · Parking",2
+The Oberoi Bengaluru,Bengaluru,MG Road,7600,4.8,Luxury,"WiFi · Pool · Spa · Garden",4
+Ibis Bengaluru City Centre,Bengaluru,Sampangi Rama Nagar,3900,4.1,Business,"WiFi · Breakfast · Workspace",3
+Urban Nest Bengaluru,Bengaluru,Indiranagar,2400,3.9,Budget,"WiFi · Parking · Air conditioning",2
+Taj Palace Goa,Goa,Dona Paula,6900,4.6,Luxury,"WiFi · Beach access · Pool · Spa",5
+Palm Grove Resort,Goa,Calangute,4500,4.3,Resort,"WiFi · Pool · Breakfast · Beach access",4
+Coco Bay Goa,Goa,Anjuna,2800,4.0,Budget,"WiFi · Breakfast · Garden",3
+The Westin Hyderabad,Hyderabad,HITEC City,6100,4.5,Business,"WiFi · Pool · Gym · Workspace",4
+Trident Hyderabad,Hyderabad,Hussain Sagar,5700,4.6,Luxury,"WiFi · Pool · Restaurant · Garden",3
+Charminar Comforts,Hyderabad,Old City,2200,3.9,Budget,"WiFi · Breakfast · Parking",2
+Rambagh Palace Jaipur,Jaipur,Bhawani Singh Road,11200,4.9,Luxury,"WiFi · Pool · Spa · Restaurant",5
+The Fern Jaipur,Jaipur,Tonk Road,4300,4.3,Business,"WiFi · Breakfast · Gym",3
+Pink City Haveli,Jaipur,MI Road,2600,4.1,Budget,"WiFi · Breakfast · Rooftop",3
+The Lakeview Udaipur,Udaipur,Lake Pichola,8200,4.7,Resort,"WiFi · Pool · Lake view · Breakfast",4
+Aravali Retreat,Udaipur,Shikarbadi,5200,4.4,Resort,"WiFi · Garden · Restaurant · Parking",4
