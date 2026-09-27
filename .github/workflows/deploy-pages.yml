@@ -39,6 +39,10 @@ jobs:
           mkdir -p dist/public/admin dist/public/staff
           cp dist/public/index.html dist/public/admin/index.html
           cp dist/public/index.html dist/public/staff/index.html
+      - name: Add permanent hotel comparison website
+        run: |
+          mkdir -p dist/public/hotel_price_dashboard
+          cp hotel_price_dashboard/site/index.html dist/public/hotel_price_dashboard/index.html
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

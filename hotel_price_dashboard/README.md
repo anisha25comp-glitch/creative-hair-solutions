@@ -13,6 +13,8 @@ hotel_price_dashboard/
 ├── app.py
 ├── hotels.csv
 ├── requirements.txt
+├── site/
+│   └── index.html
 └── README.md
 ```
 
@@ -62,7 +64,17 @@ hotel_price_dashboard/
 
 ## Publish as a permanent website
 
-This project is ready for **Streamlit Community Cloud**, which hosts the Python app at a permanent public URL while the repository remains available on GitHub.
+The repository also includes a standalone static website at `site/index.html`, so the dashboard can be hosted permanently on GitHub Pages without a Streamlit login.
+
+The GitHub Pages workflow publishes it at:
+
+```text
+https://anisha25comp-glitch.github.io/creative-hair-solutions/hotel_price_dashboard/
+```
+
+The static version has the same filters, sorting, statistics, charts, hotel details, and CSV download in browser JavaScript. The original Python + Streamlit version remains available for local use and academic demonstration.
+
+For the Python version, **Streamlit Community Cloud** can also host the app at a permanent public URL:
 
 1. Sign in at [share.streamlit.io](https://share.streamlit.io/) with the GitHub account that owns this repository.
 2. Select **New app**.
