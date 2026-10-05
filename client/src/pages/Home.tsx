@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import {
@@ -10,7 +10,6 @@ import {
   Clock3,
   Instagram,
   MapPin,
-  Menu,
   MessageCircle,
   MoreHorizontal,
   Phone,
@@ -38,7 +37,7 @@ const whatsappHref = "https://wa.me/919222631384";
 const mapsHref = "https://www.google.com/maps/search/?api=1&query=The+Creative+Hair+Solutions+Unisex+Salon+Ulhasnagar";
 
 const images = {
-  hero: "/manus-storage/creative-hero_a74c00da.jpg",
+  hero: "/creative-hero.jpg",
   detail: "/manus-storage/creative-detail_c5c422ac.jpg",
   styling: "/manus-storage/creative-styling_a4cabbe1.jpg",
   interior: "/manus-storage/creative-interior_920f61c1.jpg",
@@ -60,86 +59,252 @@ const reviews = [
 ];
 
 const categories = ["All", "Hair", "Colour", "Occasion", "Care"];
+const getServicePrice = (serviceName: string) => {
+  const menuItem = menuCategories.flatMap((category) => category.items).find((item) => item.name === serviceName);
+  if (menuItem) return menuItem.price;
+  const featuredService = services.find((service) => service.name === serviceName);
+  return featuredService?.price ?? "Price on consultation";
+};
 
 const menuCategories = [
-  { name: "Hair & styling", description: "Cuts, wash, finish and everyday styling", icon: Scissors, items: [
-    { name: "Women’s hair wash & haircut", detail: "Consultation, wash, cut and finish", price: "₹700", duration: "60 min" },
-    { name: "Men’s hair wash & haircut", detail: "Clean cut, wash and styled finish", price: "₹300", duration: "45 min" },
-    { name: "Hair wash regular", detail: "A clean refresh before your cut or styling", price: "₹100", duration: "20 min" },
-    { name: "Hair trimming", detail: "A clean refresh without changing your length", price: "₹300–₹500", duration: "30 min" },
-    { name: "Hair blowdry", detail: "Smooth, glossy volume and movement", price: "₹300", duration: "30 min" },
-    { name: "Hair wash with blowdry", detail: "Wash, dry and polished finish", price: "₹400", duration: "45 min" },
-    { name: "Hair style", detail: "Everyday and occasion styling by length", price: "₹500–₹900", duration: "45–90 min" },
-    { name: "Haircut for boys under 10", detail: "A comfortable cut for younger guests", price: "₹200", duration: "30 min" },
+  { name: "Styling", gender: "men", description: "Wash, grooming and cuts", icon: Scissors, items: [
+    { name: "Hair Wash (Regular)", detail: "Men’s styling menu", price: "₹100", duration: "20 min" },
+    { name: "Beard Clean Shave", detail: "Clean, comfortable shave", price: "₹120", duration: "20 min" },
+    { name: "Beard Style", detail: "Defined beard shape and finish", price: "₹150", duration: "30 min" },
+    { name: "Haircut For Boys (10 yrs.)", detail: "For boys up to 10 years", price: "₹200", duration: "30 min" },
+    { name: "Hair Wash & Haircut", detail: "Wash and finished haircut", price: "₹300", duration: "45 min" },
   ]},
-  { name: "Men’s grooming", description: "Hair, beard, massage and everyday polish", icon: UserRound, items: [
-    { name: "Beard clean shave", detail: "A close, comfortable finish", price: "₹120", duration: "20 min" },
-    { name: "Beard style", detail: "Defined shape and considered lines", price: "₹150", duration: "30 min" },
-    { name: "Moustache colour", detail: "Natural coverage and a sharper finish", price: "₹100", duration: "30 min" },
-    { name: "Beard colour", detail: "Natural coverage and a sharper finish", price: "₹300", duration: "45 min" },
-    { name: "Men’s hair colour", detail: "Natural coverage or a new direction", price: "₹800", duration: "90 min" },
-    { name: "Head massage with oil", detail: "Relaxing oil massage, no steam", price: "₹250–₹300", duration: "30 min" },
-    { name: "Head massage with oil & steam", detail: "Oil massage with a warm steam finish", price: "₹350–₹600", duration: "30 min" },
-    { name: "Aroma oil & steam", detail: "A longer restorative scalp ritual", price: "₹450–₹700", duration: "60 min" },
+  { name: "Head Massage", gender: "men", description: "Oil, steam and aroma rituals", icon: UserRound, items: [
+    { name: "Head Massage with Oil (30 min. No Steam)", detail: "Relaxing oil massage", price: "₹250", duration: "30 min" },
+    { name: "Head Massage with Oil & Steam", detail: "Oil massage with steam", price: "₹350", duration: "30 min" },
+    { name: "Head Massage with Aroma Oil & Steam 60 min.", detail: "Aroma oil and steam ritual", price: "₹450", duration: "60 min" },
   ]},
-  { name: "Hair colour", description: "Global colour, highlights, roots and balayage", icon: Sparkles, items: [
-    { name: "Root touch-up 1 inch", detail: "L’Oréal / Schwarzkopf", price: "₹1,200", duration: "90 min" },
-    { name: "Root touch-up 2 inch", detail: "L’Oréal / Schwarzkopf", price: "₹1,500", duration: "90 min" },
-    { name: "Root touch-up Inoa 1 inch", detail: "Ammonia-free root colour", price: "₹1,500", duration: "90 min" },
-    { name: "Root touch-up Inoa 2 inch", detail: "Ammonia-free root colour", price: "₹1,700", duration: "90 min" },
-    { name: "Global colour by length", detail: "Basic L’Oréal / Schwarzkopf", price: "₹2,000–₹4,500", duration: "120–180 min" },
-    { name: "Global ammonia-free colour", detail: "Ammonia-free colour by length", price: "₹2,500–₹6,000", duration: "120–180 min" },
-    { name: "Highlights by length", detail: "Light-catching accents placed for you", price: "₹3,000–₹6,000", duration: "150–240 min" },
-    { name: "Balayage by length", detail: "Dimensional colour with soft grow-out", price: "₹3,500–₹7,000", duration: "180–240 min" },
-    { name: "Fashion streak", detail: "A statement accent or softer pop of colour", price: "₹200", duration: "60 min" },
+  { name: "Hair Color", gender: "men", description: "Colour, streaks and highlights", icon: Sparkles, items: [
+    { name: "Moustache Color", detail: "Natural moustache coverage", price: "₹100", duration: "30 min" },
+    { name: "Fashion Streak", detail: "A statement colour accent", price: "₹200", duration: "60 min" },
+    { name: "Beard Colour", detail: "Natural beard coverage", price: "₹300", duration: "45 min" },
+    { name: "Hair Color", detail: "Professional hair colour", price: "₹800", duration: "90 min" },
+    { name: "Hair Colour (Inoa without Ammonia)", detail: "Ammonia-free colour", price: "₹900", duration: "90 min" },
+    { name: "Highlights", detail: "Light-catching highlights", price: "₹1,500", duration: "150 min" },
   ]},
-  { name: "Hair treatments", description: "Keratin, smoothening, spa and scalp care", icon: Sparkles, items: [
-    { name: "Loreal hair spa", detail: "Nourishing care for dry or stressed hair", price: "₹500", duration: "60 min" },
-    { name: "Olaplex hair treatment", detail: "Bond-building care for fragile hair", price: "₹1,600", duration: "90 min" },
-    { name: "Smoothening by length", detail: "Extra charges apply for long and thick hair", price: "₹1,500–₹7,000", duration: "180–300 min" },
-    { name: "Straightening by length", detail: "A sleek polished finish", price: "₹2,000–₹8,000", duration: "180–300 min" },
-    { name: "Rebonding by length", detail: "Straightening with structured finish", price: "₹2,500–₹9,000", duration: "180–300 min" },
-    { name: "Keratin / Botox treatment", detail: "Fringe to below-waist price range", price: "₹1,000–₹10,500", duration: "180–360 min" },
-    { name: "Dandruff treatment", detail: "Targeted scalp and hair-care ritual", price: "₹1,000–₹2,000", duration: "75 min" },
-    { name: "Hair fall treatment", detail: "Scalp-focused care for weakened hair", price: "₹1,500", duration: "75 min" },
-    { name: "Metal DX treatment", detail: "Professional colour-protection care", price: "₹2,200", duration: "90 min" },
-    { name: "Luxury hair spa", detail: "Deep restorative nourishment", price: "₹2,500", duration: "90 min" },
-    { name: "Absolut Repair Molecular", detail: "Advanced repair for damaged lengths", price: "₹3,000", duration: "90 min" },
+  { name: "Hair Treatments", gender: "men", description: "Straightening, smoothning and keratin", icon: Sparkles, items: [
+    { name: "Straightening", detail: "Extra charges for long and thick hair", price: "₹2,000", duration: "By consultation" },
+    { name: "Smoothning", detail: "Extra charges for long and thick hair", price: "₹1,800", duration: "By consultation" },
+    { name: "Keratin Pro Advance", detail: "Extra charges for long and thick hair", price: "₹2,500", duration: "By consultation" },
   ]},
-  { name: "Skin & beauty", description: "Threading, waxing, facials, clean-ups and bleach", icon: Star, items: [
-    { name: "Threading", detail: "Forehead, chin, lips, side locks, brows or full face", price: "₹30–₹200", duration: "15–30 min" },
-    { name: "Rica wax", detail: "Under arms, arms, legs, back, front or full body", price: "₹150–₹2,800", duration: "30–90 min" },
-    { name: "Brazilian wax", detail: "Chin, upper lip, side lock, bikini and full bikini", price: "₹150–₹2,000", duration: "30–90 min" },
-    { name: "Facials", detail: "Regular through Shahnaz Gold", price: "₹1,500–₹5,000", duration: "60–120 min" },
-    { name: "Hydra facial", detail: "Hydration-focused professional facial", price: "₹2,500", duration: "75 min" },
-    { name: "Korean Hydra facial", detail: "Advanced glass-skin inspired treatment", price: "₹3,500", duration: "90 min" },
-    { name: "Clean up", detail: "Regular, Nature, Ozone, Hydra, Richfeel or D-Tan", price: "₹700–₹1,000", duration: "45–60 min" },
-    { name: "D-Tan mask", detail: "Face, arms, legs, back, front or full body", price: "₹250–₹2,800", duration: "30–75 min" },
-    { name: "Bleach", detail: "Face, neck, arms, legs, back, front or full body", price: "₹500–₹2,500", duration: "30–75 min" },
-    { name: "Body polishing", detail: "Full arms, front/back, legs or full body", price: "₹1,500–₹3,500", duration: "60–120 min" },
+  { name: "Hair Spa", gender: "men", description: "Spa and scalp care", icon: Sparkles, items: [
+    { name: "Loreal Spa", detail: "Nourishing professional spa", price: "₹500", duration: "60 min" },
+    { name: "Dandruff", detail: "Targeted dandruff care", price: "₹1,000", duration: "By consultation" },
+    { name: "Hair Fall", detail: "Scalp-focused hair fall care", price: "₹1,500", duration: "By consultation" },
   ]},
-  { name: "Manicure, pedicure & nails", description: "Hands, feet and polished finishing details", icon: Star, items: [
-    { name: "Nail cut & file", detail: "A clean, neat finish", price: "₹100", duration: "15 min" },
-    { name: "Foot massage", detail: "Relaxing foot reset", price: "₹300", duration: "30 min" },
-    { name: "Pedicure", detail: "Regular, Aroma, D-Tan, Crystal or Spa", price: "₹600–₹1,400", duration: "45–75 min" },
-    { name: "Manicure", detail: "Regular, Aroma, D-Tan, Crystal or Spa", price: "₹500–₹1,200", duration: "45–75 min" },
-    { name: "Toe polish", detail: "Polished colour finish", price: "₹400", duration: "30 min" },
-    { name: "Gel polish", detail: "Long-wear gel colour", price: "₹500", duration: "45 min" },
-    { name: "Temporary extension", detail: "Instant length and shape", price: "₹700", duration: "60 min" },
-    { name: "Gel overlays", detail: "Strength and shine over natural nails", price: "₹800", duration: "60 min" },
+  { name: "Manicure", gender: "both", description: "Hand care for women and men", icon: Star, items: [
+    { name: "Regular Manicure", detail: "Classic manicure", price: "₹500", duration: "45 min" },
+    { name: "Aroma Manicure", detail: "Aroma manicure ritual", price: "₹600", duration: "45 min" },
+    { name: "D Tan Manicure", detail: "D-tan manicure ritual", price: "₹700", duration: "60 min" },
+    { name: "Spa Manicure", detail: "Deep care and relaxation", price: "₹1,000", duration: "60 min" },
   ]},
-  { name: "Massage & relaxation", description: "Body massage and restorative rituals", icon: CalendarDays, items: [
-    { name: "Body massage 40 minutes", detail: "Coconut oil or cream", price: "₹1,600–₹1,700", duration: "40 min" },
-    { name: "Body massage 60 minutes", detail: "Coconut oil or cream", price: "₹2,200–₹2,300", duration: "60 min" },
-    { name: "Body massage 90 minutes", detail: "Coconut oil or cream", price: "₹2,800–₹2,900", duration: "90 min" },
+  { name: "Pedicure", gender: "both", description: "Foot care for women and men", icon: Star, items: [
+    { name: "Regular Pedicure", detail: "Classic pedicure", price: "₹700", duration: "45 min" },
+    { name: "Aroma Pedicure", detail: "Aroma pedicure ritual", price: "₹800", duration: "60 min" },
+    { name: "D Tan Pedicure", detail: "D-tan pedicure ritual", price: "₹900", duration: "60 min" },
+    { name: "Spa Pedicure", detail: "Deep care and relaxation", price: "₹1,200", duration: "75 min" },
   ]},
-  { name: "Makeup & packages", description: "Party, bridal, groom and complete occasion packages", icon: CalendarDays, items: [
-    { name: "Party makeup", detail: "Polished beauty for your big plans", price: "₹1,500–₹2,000", duration: "90 min" },
-    { name: "Bridal makeup", detail: "A complete bridal look, planned around you", price: "₹10,000", duration: "180 min" },
-    { name: "Pre-groom package", detail: "Hair, keratin spa, colour, shave, bleach, facial, polishing, mani-pedi and makeup", price: "₹300–₹6,000 per service", duration: "By plan" },
-    { name: "Pre-bridal package", detail: "Hair, keratin spa, bleach, facial, waxing, polishing, mani-pedi, highlights, makeup and nail art", price: "₹600–₹17,000 per service", duration: "By plan" },
-    { name: "Shahnaz Gold facial", detail: "Premium occasion facial", price: "₹5,000", duration: "120 min" },
-    { name: "Nail art", detail: "Toe polish, removal, gel, extensions and overlays", price: "₹400–₹800", duration: "30–90 min" },
+  { name: "Hair Cutting Style", gender: "women", description: "Women’s cuts, wash and finish", icon: Scissors, items: [
+    { name: "Hair Wash & Haircut", detail: "Women’s hair cut and wash", price: "₹700", duration: "60 min" },
+    { name: "Hair Trimming", detail: "Trim and refresh", price: "₹500", duration: "45 min" },
+    { name: "Hair Wash & Haircut (10 yrs. above Girls)", detail: "For girls above 10 years", price: "₹400", duration: "45 min" },
+    { name: "Hair Trimming (3 yrs. above Girls)", detail: "For girls above 3 years", price: "₹300", duration: "30 min" },
+    { name: "Haircut & Hair Wash (3 yrs. above Girls)", detail: "For girls above 3 years", price: "₹300", duration: "45 min" },
+    { name: "Haircut Trimming", detail: "Shape and trim", price: "₹300", duration: "30 min" },
+    { name: "Hair Wash (Regular)", detail: "Regular hair wash", price: "₹300", duration: "30 min" },
+    { name: "Hair Blowdry", detail: "Smooth blowdry finish", price: "₹300", duration: "30 min" },
+    { name: "Hair Wash with Blowdry", detail: "Wash and blowdry finish", price: "₹400", duration: "45 min" },
+  ]},
+  { name: "Hair Style", gender: "women", description: "Ironing and tongs by length", icon: Scissors, items: [
+    { name: "Up to Shoulder", detail: "Ironing ₹500 · Tongs ₹600", price: "₹500 / ₹600", duration: "By length" },
+    { name: "Below Shoulder", detail: "Ironing ₹600 · Tongs ₹700", price: "₹600 / ₹700", duration: "By length" },
+    { name: "Mid Waist", detail: "Ironing ₹700 · Tongs ₹800", price: "₹700 / ₹800", duration: "By length" },
+    { name: "Below Waist", detail: "Ironing ₹800 · Tongs ₹900", price: "₹800 / ₹900", duration: "By length" },
+  ]},
+  { name: "Head Massages", gender: "women", description: "Women’s oil and steam rituals", icon: UserRound, items: [
+    { name: "Head Massage with Oil (30 min.)", detail: "Relaxing oil massage", price: "₹300", duration: "30 min" },
+    { name: "Head Wash with Oil & Steam (30 min.)", detail: "Oil, wash and steam", price: "₹600", duration: "30 min" },
+    { name: "Head Massage with Aroma Oil & Steam (30 min.)", detail: "Aroma oil and steam", price: "₹700", duration: "30 min" },
+  ]},
+  { name: "Hair Spa", gender: "women", description: "Hair spa by length", icon: Sparkles, items: [
+    { name: "Up to Shoulder", detail: "Hair spa by length", price: "₹800", duration: "By length" },
+    { name: "Below Shoulder", detail: "Hair spa by length", price: "₹900", duration: "By length" },
+    { name: "Mid Waist", detail: "Hair spa by length", price: "₹1,300", duration: "By length" },
+    { name: "Below Waist", detail: "Hair spa by length", price: "₹1,600", duration: "By length" },
+  ]},
+  { name: "Olaplex Hair Treatment", gender: "women", description: "Repair treatment by length", icon: Sparkles, items: [
+    { name: "Up to Neck", detail: "Olaplex treatment", price: "₹600", duration: "By length" },
+    { name: "Up to Shoulder", detail: "Olaplex treatment", price: "₹700", duration: "By length" },
+    { name: "Below Shoulder", detail: "Olaplex treatment", price: "₹900", duration: "By length" },
+    { name: "Mid Waist", detail: "Olaplex treatment", price: "₹1,200", duration: "By length" },
+    { name: "Below Waist", detail: "Olaplex treatment", price: "₹1,500", duration: "By length" },
+  ]},
+  { name: "Scalp & Hair Care Treatments", gender: "women", description: "Professional scalp and hair care", icon: Sparkles, items: [
+    { name: "Hair Scalp Oily Treatment", detail: "Targeted scalp treatment", price: "₹1,800", duration: "By consultation" },
+    { name: "Hair Smooth Treatment", detail: "Smooth hair treatment", price: "₹2,000", duration: "By consultation" },
+    { name: "Anti-Dandruff Treatment", detail: "Targeted anti-dandruff care", price: "₹2,000", duration: "By consultation" },
+    { name: "Deep-Nourishing Treatment", detail: "Deep nourishing care", price: "₹1,500", duration: "By consultation" },
+    { name: "Metal DX Treatment", detail: "Colour-protection treatment", price: "₹2,200", duration: "By consultation" },
+    { name: "Luxury Hair Spa", detail: "Deep restorative nourishment", price: "₹2,500", duration: "90 min" },
+    { name: "Absolut Repair Molecular Treatment", detail: "Advanced repair care", price: "₹3,000", duration: "90 min" },
+  ]},
+  { name: "Scalp Treatment", gender: "women", description: "Scalp-focused care", icon: Sparkles, items: [
+    { name: "Dandruff treatment", detail: "Scalp treatment", price: "₹1,600", duration: "By consultation" },
+    { name: "Hair fall treatment", detail: "Scalp treatment", price: "₹1,600", duration: "By consultation" },
+  ]},
+  { name: "Advance Keratin Treatment", gender: "women", description: "Keratin, Nano, Tano/Beauto and Advanced Pro by length", icon: Sparkles, items: [
+    { name: "Fringe", detail: "Keratin/Botox ₹1,000 · Nano Plastia ₹1,500 · Tano/Beauto Plastia ₹1,700 · Advanced Pro ₹1,900", price: "₹1,000–₹1,900", duration: "By length" },
+    { name: "Crown", detail: "Keratin/Botox ₹2,000 · Nano Plastia ₹2,500 · Tano/Beauto Plastia ₹2,700 · Advanced Pro ₹2,900", price: "₹2,000–₹2,900", duration: "By length" },
+    { name: "Up to Neck", detail: "Keratin/Botox ₹2,500 · Nano Plastia ₹3,000 · Tano/Beauto Plastia ₹3,000 · Advanced Pro ₹3,400", price: "₹2,500–₹3,400", duration: "By length" },
+    { name: "Up to Shoulder", detail: "Keratin/Botox ₹3,000 · Nano Plastia ₹4,500 · Tano/Beauto Plastia ₹5,500 · Advanced Pro ₹6,500", price: "₹3,000–₹6,500", duration: "By length" },
+    { name: "Below Shoulder", detail: "Keratin/Botox ₹5,500 · Nano Plastia ₹6,500 · Tano/Beauto Plastia ₹7,500 · Advanced Pro ₹8,500", price: "₹5,500–₹8,500", duration: "By length" },
+    { name: "Mid Waist", detail: "Keratin/Botox ₹6,500 · Nano Plastia ₹7,500 · Tano/Beauto Plastia ₹8,500 · Advanced Pro ₹9,500", price: "₹6,500–₹9,500", duration: "By length" },
+    { name: "Below Waist", detail: "Keratin/Botox ₹7,500 · Nano Plastia ₹8,500 · Tano/Beauto Plastia ₹9,500 · Advanced Pro ₹10,500", price: "₹7,500–₹10,500", duration: "By length" },
+  ]},
+  { name: "Straightening", gender: "women", description: "Smoothning, straightening and rebonding by length", icon: Sparkles, items: [
+    { name: "Fringe", detail: "Smoothning ₹1,500 · Straightening ₹2,000 · Rebonding ₹2,500", price: "₹1,500–₹2,500", duration: "By length" },
+    { name: "Crown", detail: "Smoothning ₹2,000 · Straightening ₹2,500 · Rebonding ₹3,000", price: "₹2,000–₹3,000", duration: "By length" },
+    { name: "Up to Neck", detail: "Smoothning ₹3,000 · Straightening ₹3,500 · Rebonding ₹4,000", price: "₹3,000–₹4,000", duration: "By length" },
+    { name: "Up to Shoulder", detail: "Smoothning ₹3,500 · Straightening ₹4,500 · Rebonding ₹5,000", price: "₹3,500–₹5,000", duration: "By length" },
+    { name: "Below Shoulder", detail: "Smoothning ₹4,000 · Straightening ₹5,500 · Rebonding ₹6,000", price: "₹4,000–₹6,000", duration: "By length" },
+    { name: "Mid Waist", detail: "Smoothning ₹5,500 · Straightening ₹6,500 · Rebonding ₹7,500", price: "₹5,500–₹7,500", duration: "By length" },
+    { name: "Below Waist", detail: "Smoothning ₹7,000 · Straightening ₹8,000 · Rebonding ₹9,000", price: "₹7,000–₹9,000", duration: "By length" },
+  ]},
+  { name: "Hair Color", gender: "women", description: "L’Oreal / Schwarzkopf colour", icon: Sparkles, items: [
+    { name: "Root Touch Up (1 inch)", detail: "L’Oreal / Schwarzkopf", price: "₹1,200", duration: "90 min" },
+    { name: "Root Touch Up (2 inch)", detail: "L’Oreal / Schwarzkopf", price: "₹1,500", duration: "90 min" },
+    { name: "Root Touch Up (Inoa 1 inch)", detail: "Ammonia-free Inoa colour", price: "₹1,500", duration: "90 min" },
+    { name: "Root Touch Up (Inoa 2 inch)", detail: "Ammonia-free Inoa colour", price: "₹1,700", duration: "90 min" },
+  ]},
+  { name: "Global Hair Color", gender: "women", description: "Basic and ammonia-free by length", icon: Sparkles, items: [
+    { name: "Up to neck", detail: "Basic ₹2,000 · Ammonia Free ₹2,500", price: "₹2,000 / ₹2,500", duration: "By length" },
+    { name: "Up to shoulder", detail: "Basic ₹2,500 · Ammonia Free ₹3,000", price: "₹2,500 / ₹3,000", duration: "By length" },
+    { name: "Below shoulder", detail: "Basic ₹3,000 · Ammonia Free ₹4,000", price: "₹3,000 / ₹4,000", duration: "By length" },
+    { name: "Mid waist", detail: "Basic ₹4,000 · Ammonia Free ₹5,000", price: "₹4,000 / ₹5,000", duration: "By length" },
+    { name: "Below waist", detail: "Basic ₹4,500 · Ammonia Free ₹6,000", price: "₹4,500 / ₹6,000", duration: "By length" },
+  ]},
+  { name: "Advance Hair Color", gender: "women", description: "Highlights and balayage by length", icon: Sparkles, items: [
+    { name: "Up to neck", detail: "Highlights ₹3,000 · Balayage ₹3,500", price: "₹3,000 / ₹3,500", duration: "By length" },
+    { name: "Up to shoulder", detail: "Highlights ₹3,500 · Balayage ₹4,000", price: "₹3,500 / ₹4,000", duration: "By length" },
+    { name: "Below shoulder", detail: "Highlights ₹4,000 · Balayage ₹5,000", price: "₹4,000 / ₹5,000", duration: "By length" },
+    { name: "Mid waist", detail: "Highlights ₹5,500 · Balayage ₹6,000", price: "₹5,500 / ₹6,000", duration: "By length" },
+    { name: "Below waist", detail: "Highlights ₹6,000 · Balayage ₹7,000", price: "₹6,000 / ₹7,000", duration: "By length" },
+  ]},
+  { name: "Threading", gender: "women", description: "Face threading services", icon: Star, items: [
+    { name: "Forehead", detail: "Threading", price: "₹30", duration: "15 min" },
+    { name: "Chin", detail: "Threading", price: "₹30", duration: "15 min" },
+    { name: "Upper Lips", detail: "Threading", price: "₹30", duration: "15 min" },
+    { name: "Lower Lips", detail: "Threading", price: "₹30", duration: "15 min" },
+    { name: "Side Locks", detail: "Threading", price: "₹60", duration: "15 min" },
+    { name: "Eye Brows", detail: "Threading", price: "₹60", duration: "15 min" },
+    { name: "Full Face", detail: "Threading", price: "₹200", duration: "30 min" },
+  ]},
+  { name: "Rica Wax", gender: "women", description: "Body waxing services", icon: Star, items: [
+    { name: "Under Arms", detail: "Rica wax", price: "₹150", duration: "30 min" },
+    { name: "Half Back / Front", detail: "Rica wax", price: "₹400", duration: "45 min" },
+    { name: "Full Arms", detail: "Rica wax", price: "₹500", duration: "45 min" },
+    { name: "Half Legs", detail: "Rica wax", price: "₹500", duration: "45 min" },
+    { name: "Stomach", detail: "Rica wax", price: "₹500", duration: "45 min" },
+    { name: "Full Legs", detail: "Rica wax", price: "₹700", duration: "60 min" },
+    { name: "Full Back / Front", detail: "Rica wax", price: "₹800", duration: "60 min" },
+    { name: "Full Body Wax", detail: "Rica wax", price: "₹2,800", duration: "90 min" },
+  ]},
+  { name: "Brazilian Wax", gender: "women", description: "Bikini and body waxing", icon: Star, items: [
+    { name: "Chin / Upper lip", detail: "Brazilian wax", price: "₹150", duration: "30 min" },
+    { name: "Side lock", detail: "Brazilian wax", price: "₹220", duration: "30 min" },
+    { name: "Under Arms", detail: "Brazilian wax", price: "₹250", duration: "30 min" },
+    { name: "Full Face", detail: "Brazilian wax", price: "₹600", duration: "45 min" },
+    { name: "Bikini Line", detail: "Brazilian wax", price: "₹900", duration: "45 min" },
+    { name: "Full Bikini", detail: "Brazilian wax", price: "₹2,000", duration: "60 min" },
+  ]},
+  { name: "Nail Art", gender: "women", description: "Polish, extensions and overlays", icon: Star, items: [
+    { name: "Toe Polish", detail: "Nail art", price: "₹400", duration: "30 min" },
+    { name: "Removals", detail: "Nail art", price: "₹400", duration: "30 min" },
+    { name: "Gel Polish", detail: "Nail art", price: "₹500", duration: "45 min" },
+    { name: "Temporary Extension", detail: "Nail art", price: "₹700", duration: "60 min" },
+    { name: "Gel Overlays", detail: "Nail art", price: "₹800", duration: "60 min" },
+  ]},
+  { name: "Body Massage", gender: "women", description: "Coconut oil or cream massage", icon: CalendarDays, items: [
+    { name: "Body Massage 40 Mins.", detail: "Coconut oil ₹1,600 · Cream ₹1,700", price: "₹1,600 / ₹1,700", duration: "40 min" },
+    { name: "Body Massage 60 Min.", detail: "Coconut oil ₹2,200 · Cream ₹2,300", price: "₹2,200 / ₹2,300", duration: "60 min" },
+    { name: "Boday Massage 90 Min.", detail: "Coconut oil ₹2,800 · Cream ₹2,900", price: "₹2,800 / ₹2,900", duration: "90 min" },
+  ]},
+  { name: "D-Tan Mask", gender: "women", description: "D-tan mask treatments", icon: Star, items: [
+    { name: "Under Arms", detail: "D-tan mask", price: "₹250", duration: "30 min" },
+    { name: "D-Tan (Face)", detail: "D-tan mask", price: "₹500", duration: "30 min" },
+    { name: "O3 D-Tan", detail: "D-tan mask", price: "₹700", duration: "45 min" },
+    { name: "Full Arms", detail: "D-tan mask", price: "₹800", duration: "45 min" },
+    { name: "Half Legs / Back / Front", detail: "D-tan mask", price: "₹800", duration: "60 min" },
+    { name: "Full Legs / Back / Front", detail: "D-tan mask", price: "₹1,000", duration: "75 min" },
+    { name: "Full Body", detail: "D-tan mask", price: "₹2,800", duration: "90 min" },
+  ]},
+  { name: "Bleach", gender: "women", description: "Face and body bleach", icon: Star, items: [
+    { name: "Face & Neck", detail: "Bleach", price: "₹500", duration: "30 min" },
+    { name: "Neck & Blouse Line", detail: "Bleach", price: "₹600", duration: "30 min" },
+    { name: "O3 Bleach", detail: "Bleach", price: "₹600", duration: "45 min" },
+    { name: "Cherly's Bleach", detail: "Bleach", price: "₹600", duration: "45 min" },
+    { name: "Full Arms / Half Legs", detail: "Bleach", price: "₹800", duration: "60 min" },
+    { name: "Full Legs / Back / Front", detail: "Bleach", price: "₹1,000", duration: "75 min" },
+    { name: "Full Body", detail: "Bleach", price: "₹2,500", duration: "90 min" },
+  ]},
+  { name: "Facial’s", gender: "women", description: "Facials for female and male guests", icon: Star, items: [
+    { name: "Regular Facial", detail: "Female / Male", price: "₹1,500", duration: "60 min" },
+    { name: "Natural Facial", detail: "Female / Male", price: "₹1,700", duration: "60 min" },
+    { name: "Ozone Facial", detail: "Female / Male", price: "₹1,900", duration: "60 min" },
+    { name: "Korean Glass", detail: "Female / Male", price: "₹1,900", duration: "75 min" },
+    { name: "Oxyblast Facial", detail: "Female / Male", price: "₹2,200", duration: "75 min" },
+    { name: "Hydra Facial", detail: "Female / Male", price: "₹2,500", duration: "75 min" },
+    { name: "O.W. Orange Wood Facial", detail: "Female / Male", price: "₹3,000", duration: "90 min" },
+    { name: "O.3 Advance Facial", detail: "Female / Male", price: "₹3,500", duration: "90 min" },
+    { name: "Korean Hydra", detail: "Female / Male", price: "₹3,500", duration: "90 min" },
+    { name: "O.2 C2 Cheryls", detail: "Female / Male", price: "₹4,000", duration: "90 min" },
+    { name: "Derma Cheryls", detail: "Female / Male", price: "₹4,500", duration: "90 min" },
+    { name: "Shahnaz Gold Facial", detail: "Female / Male", price: "₹5,000", duration: "120 min" },
+  ]},
+  { name: "Body Polishing", gender: "women", description: "Body polishing for female and male guests", icon: Star, items: [
+    { name: "Full Arms with Under Arms", detail: "Female / Male", price: "₹1,500", duration: "60 min" },
+    { name: "Full Front / Back", detail: "Female / Male", price: "₹1,600", duration: "60 min" },
+    { name: "Full Legs", detail: "Female / Male", price: "₹1,800", duration: "75 min" },
+    { name: "Full Body", detail: "Female / Male", price: "₹3,500", duration: "120 min" },
+  ]},
+  { name: "Clean Up", gender: "women", description: "Clean-up treatments for female and male guests", icon: Star, items: [
+    { name: "Regular Clean Up", detail: "Female / Male", price: "₹700", duration: "45 min" },
+    { name: "Nature Clean UP", detail: "Female / Male", price: "₹800", duration: "45 min" },
+    { name: "Ozone Clean Up", detail: "Female / Male", price: "₹850", duration: "60 min" },
+    { name: "Hydra Clean Up", detail: "Female / Male", price: "₹900", duration: "60 min" },
+    { name: "Richfeel Clean Up", detail: "Female / Male", price: "₹1,000", duration: "60 min" },
+    { name: "D-Tan Clean Up", detail: "Female / Male", price: "₹1,000", duration: "60 min" },
+  ]},
+  { name: "Pre-Groom Package", gender: "women", description: "Groom package services", icon: CalendarDays, items: [
+    { name: "Hair Wash & Cut", detail: "Pre-groom package", price: "₹300", duration: "By plan" },
+    { name: "Keratin Hair SPA", detail: "Pre-groom package", price: "₹1,000", duration: "By plan" },
+    { name: "Hair Colour", detail: "Pre-groom package", price: "₹800", duration: "By plan" },
+    { name: "Shaving", detail: "Two price options", price: "₹120 / ₹150", duration: "By plan" },
+    { name: "Bleach", detail: "Pre-groom package", price: "₹500", duration: "By plan" },
+    { name: "Shahnaz Gold Facial", detail: "Pre-groom package", price: "₹5,000", duration: "By plan" },
+    { name: "Body Polishing", detail: "Pre-groom package", price: "₹3,500", duration: "By plan" },
+    { name: "SPA Manicure", detail: "Pre-groom package", price: "₹1,200", duration: "By plan" },
+    { name: "SPA Pedicure", detail: "Pre-groom package", price: "₹1,400", duration: "By plan" },
+    { name: "2 Time make up & hair set", detail: "Pre-groom package", price: "₹6,000", duration: "By plan" },
+  ]},
+  { name: "Pre-Bridal Package", gender: "women", description: "Bridal package services", icon: CalendarDays, items: [
+    { name: "Hair Wash & Cut", detail: "Pre-bridal package", price: "₹700", duration: "By plan" },
+    { name: "Keratin Hair SPA", detail: "Pre-bridal package", price: "₹1,700", duration: "By plan" },
+    { name: "Bleach", detail: "Pre-bridal package", price: "₹600", duration: "By plan" },
+    { name: "Shahnaz Gold Facial", detail: "Pre-bridal package", price: "₹5,000", duration: "By plan" },
+    { name: "Full Body bleach", detail: "Pre-bridal package", price: "₹2,500", duration: "By plan" },
+    { name: "Full Body Wax (Rica)", detail: "Pre-bridal package", price: "₹2,700", duration: "By plan" },
+    { name: "Full Body Polishing", detail: "Pre-bridal package", price: "₹3,500", duration: "By plan" },
+    { name: "SPA Manicure", detail: "Pre-bridal package", price: "₹1,200", duration: "By plan" },
+    { name: "SPA Pedicure", detail: "Pre-bridal package", price: "₹1,400", duration: "By plan" },
+    { name: "Advanced Highlights", detail: "Pre-bridal package", price: "₹5,000", duration: "By plan" },
+    { name: "2 Time make up & hair set", detail: "Pre-bridal package", price: "₹17,000", duration: "By plan" },
+    { name: "Nail Art", detail: "Pre-bridal package", price: "₹2,000", duration: "By plan" },
   ]},
 ];
 
@@ -172,7 +337,6 @@ function SectionLabel({ children, light = false }: { children: React.ReactNode; 
 
 export default function Home() {
   const bookingRef = useRef<HTMLElement>(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openMenuCategory, setOpenMenuCategory] = useState<string | null>(null);
   const [menuGender, setMenuGender] = useState<"women" | "men">("women");
@@ -187,6 +351,7 @@ export default function Home() {
   const [storeFilter, setStoreFilter] = useState("All products");
   const [storeQuery, setStoreQuery] = useState("");
   const [wishlist, setWishlist] = useState<string[]>([]);
+  const moreMenuRef = useRef<HTMLDetailsElement>(null);
   const createPublicAppointment = trpc.publicBooking.create.useMutation();
 
   const filteredStoreItems = useMemo(() => storeItems.filter((product) => {
@@ -200,20 +365,18 @@ export default function Home() {
     [activeCategory],
   );
 
-  const visibleMenuCategories = useMemo(() => {
-    const menCategories = new Set(["Hair & styling", "Men’s grooming", "Hair colour", "Hair treatments", "Manicure, pedicure & nails", "Massage & relaxation"]);
-    return menuCategories.filter((category) => menuGender === "men" ? menCategories.has(category.name) : category.name !== "Men’s grooming");
-  }, [menuGender]);
+  const visibleMenuCategories = useMemo(
+    () => menuCategories.filter((category) => category.gender === menuGender || category.gender === "both"),
+    [menuGender],
+  );
 
   const scrollToBooking = (serviceName?: string) => {
     if (serviceName) setSelectedService(serviceName);
     bookingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    setMobileOpen(false);
   };
 
   const openFullMenu = () => {
     setMenuOpen(true);
-    setMobileOpen(false);
     window.setTimeout(() => document.getElementById("menu")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
   };
 
@@ -229,13 +392,18 @@ export default function Home() {
     setSelectedServices((current) => current.includes(serviceName) ? current : [...current, serviceName]);
     scrollToBooking(serviceName);
   };
+  const removeSelectedService = (serviceName: string) => {
+    setSelectedServices((current) => {
+      const next = current.filter((name) => name !== serviceName);
+      setSelectedService(next[0] ?? "Precision cut & finish");
+      return next;
+    });
+  };
 
   const openMenuForService = (serviceName: string) => {
     const category = menuCategories.find((item) => item.items.some((service) => service.name === serviceName));
     setMenuOpen(true);
     setOpenMenuCategory(category?.name ?? null);
-    setSelectedService(serviceName);
-    setSelectedServices((current) => current.includes(serviceName) ? current : [...current, serviceName]);
     window.setTimeout(() => document.getElementById("menu")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
   };
 
@@ -267,29 +435,35 @@ export default function Home() {
       description: "We’ll confirm your preferred slot over WhatsApp shortly.",
     });
   };
+  useEffect(() => {
+    const closeMenuOnOutsideClick = (event: MouseEvent) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target as Node)) moreMenuRef.current.removeAttribute("open");
+    };
+    document.addEventListener("click", closeMenuOnOutsideClick);
+    return () => document.removeEventListener("click", closeMenuOnOutsideClick);
+  }, []);
 
   return (
     <div className="salon-site">
       <header className="site-header">
         <a className="brand" href="#top" aria-label="The Creative Hair Solutions home">
-          <span className="logo-monogram" aria-hidden="true">CHS</span>
+          <img className="site-logo-image site-header-logo" src="/chs-logo.png" alt="The Creative Hair Solutions logo" />
           <span className="brand-copy">
             <strong>THE CREATIVE</strong>
             <span>Hair Solutions · Family Salon</span>
           </span>
         </a>
-        <nav className={`main-nav ${mobileOpen ? "main-nav-open" : ""}`} aria-label="Main navigation">
-          <a href="#services" onClick={() => setMobileOpen(false)}>Services</a>
+        <nav className="main-nav" aria-label="Main navigation">
+          <a href="#services">Services</a>
           <button className="nav-text-button" onClick={openFullMenu}>Full menu</button>
-          <a href="#reviews" onClick={() => setMobileOpen(false)}>Reviews</a>
-          <a href="#visit" onClick={() => setMobileOpen(false)}>Visit us</a>
-          <a href="/store"><ShoppingBag size={14} /> Store</a>
-          <a href="https://www.instagram.com/thecreativesalondombivli/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={15} /></a>
+          <a href="#reviews">Reviews</a>
+          <a href="#visit">Visit us</a>
+          <a href="/staff">Staff</a>
+          <a href="/admin">Admin</a>
+          <a className="header-icon-link" href="https://www.instagram.com/the_creative_unisex_salon?utm_source=qr&stkn=MW53aHN6Njl2cWo4Zw%3D%3D" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={16} /></a>
+          <a className="header-icon-link header-store-link" href="/store" aria-label="Our store"><ShoppingBag size={16} /><span>Our store</span></a>
         </nav>
-        <details className="more-menu"><summary aria-label="More options"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="/staff">Staff login</a><a href="/admin">Admin login</a><a href="#reviews">Reviews</a><a href="#visit">Contact & location</a></div></details>
-        <button className="mobile-toggle" onClick={() => setMobileOpen((value) => !value)} aria-label={mobileOpen ? "Close menu" : "Open menu"}>
-          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <details ref={moreMenuRef} className="more-menu"><summary aria-label="Open navigation menu"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="#services">Services</a><button type="button" onClick={openFullMenu}>Full menu</button><a href="#reviews">Reviews</a><a href="#visit">Visit us</a><a href="/store">Our store</a><a href="/staff">Staff sign in</a><a href="/admin">Admin sign in</a><a href="https://www.instagram.com/the_creative_unisex_salon?utm_source=qr&stkn=MW53aHN6Njl2cWo4Zw%3D%3D" target="_blank" rel="noreferrer">Instagram</a></div></details>
       </header>
 
       <main id="top">
@@ -307,17 +481,17 @@ export default function Home() {
         </section>
 
         <section className="services-section section-shell" id="services">
-          <div className="section-topline"><div><SectionLabel>Signature services</SectionLabel><h2>Come for the<br /><em>feeling.</em> Stay for the hair.</h2><div className="gender-menu-switch" aria-label="Choose a menu"><span>View menu for</span><button className={menuGender === "women" ? "gender-active" : ""} onClick={() => openGenderMenu("women")}>Women</button><button className={menuGender === "men" ? "gender-active" : ""} onClick={() => openGenderMenu("men")}>Men</button></div></div><p className="section-aside">Choose Women or Men to see the right menu headings. Open any heading to reveal every service, price range and duration.</p></div>
+          <div className="section-topline"><div><SectionLabel>Signature services</SectionLabel><h2>Come for the<br /><em>feeling.</em> Stay for the hair.</h2><div className="gender-menu-switch" aria-label="Choose a menu"><span>View menu for</span><button type="button" className={menuGender === "women" ? "gender-active" : ""} onClick={() => openGenderMenu("women")} aria-pressed={menuGender === "women"}>Women</button><button type="button" className={menuGender === "men" ? "gender-active" : ""} onClick={() => openGenderMenu("men")} aria-pressed={menuGender === "men"}>Man</button></div></div><p className="section-aside">Choose Women or Man to see the right menu. Click any bold heading below to reveal every service, price and duration.</p></div>
           <div className="service-filters" role="tablist" aria-label="Filter services">{categories.map((category) => <button key={category} className={activeCategory === category ? "filter-active" : ""} onClick={() => setActiveCategory(category)} role="tab" aria-selected={activeCategory === category}>{category}</button>)}</div>
           <div className="service-grid">{filteredServices.map((service) => <article className="service-card" key={service.name} onClick={() => openMenuForService(service.name)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") openMenuForService(service.name); }} role="button" tabIndex={0}><div className="service-card-top"><span className="service-tag">{service.tag}</span><span className="service-price">{service.price}</span></div><h3>{service.name}</h3><p>{service.description}</p><button className="service-arrow" onClick={(event) => { event.stopPropagation(); openMenuForService(service.name); }} aria-label={`View ${service.name} in the full menu`}><ArrowRight size={18} /></button></article>)}</div>
           <div className="service-footer"><span>Not sure what you need?</span><button className="outline-button" onClick={() => scrollToBooking()}> <ArrowRight size={16} /></button></div>
         </section>
 
-        {menuOpen && <section className="menu-timeline" id="menu"><div className="section-shell menu-heading"><div><SectionLabel>Our complete menu</SectionLabel><h2>Choose your<br /><em>experience.</em></h2></div><div className="menu-heading-side"><p>Choose a category to see every service, exact starting price, estimated duration, and add it to your appointment request.</p><button className="menu-close" onClick={() => { setMenuOpen(false); setOpenMenuCategory(null); }}>Close menu <X size={15} /></button></div></div><div className="menu-category-grid">{visibleMenuCategories.map((category) => { const Icon = category.icon; const isOpen = openMenuCategory === category.name; return <div className={`menu-category ${isOpen ? "menu-category-open" : ""}`} key={category.name}><button className="menu-category-trigger" onClick={() => setOpenMenuCategory(isOpen ? null : category.name)} aria-expanded={isOpen}><span className="menu-category-icon"><Icon size={20} /></span><span><b>{category.name}</b><small>{category.description} · {category.items.length} services</small></span><ChevronDown size={18} /></button>{isOpen && <div className="menu-subtypes">{category.items.map((item) => <div className="menu-subtype" key={item.name}><div><b>{item.name}</b><small>{item.detail}</small><span className="menu-duration"><Clock3 size={12} /> {item.duration}</span></div><strong>{item.price}</strong><button onClick={() => selectBookingService(item.name)} aria-label={`Select ${item.name}`}><span>Select</span><ArrowRight size={14} /></button></div>)}</div>}</div>; })}</div></section>}
+        {menuOpen && <section className="menu-timeline" id="menu"><div className="section-shell menu-heading"><div><SectionLabel>{menuGender === "men" ? "Man’s complete menu" : "Women’s complete menu"}</SectionLabel><h2>{menuGender === "men" ? <>Man’s<br /><em>menu.</em></> : <>Women’s<br /><em>menu.</em></>}</h2></div><div className="menu-heading-side"><div className="menu-inline-switch" aria-label="Switch full menu"><span>View menu for</span><button type="button" className={menuGender === "women" ? "gender-active" : ""} onClick={() => openGenderMenu("women")} aria-pressed={menuGender === "women"}>Women</button><button type="button" className={menuGender === "men" ? "gender-active" : ""} onClick={() => openGenderMenu("men")} aria-pressed={menuGender === "men"}>Men</button></div><p>Click a bold heading to see every {menuGender === "men" ? "men’s" : "women’s"} service, price range and duration, then add it to your appointment request.</p><button type="button" className="menu-close" onClick={() => { setMenuOpen(false); setOpenMenuCategory(null); }}>Close menu <X size={15} /></button></div></div><div className="menu-category-grid">{visibleMenuCategories.map((category) => { const Icon = category.icon; const isOpen = openMenuCategory === category.name; return <div className={`menu-category ${isOpen ? "menu-category-open" : ""}`} key={category.name}><button type="button" className="menu-category-trigger" onClick={() => setOpenMenuCategory(isOpen ? null : category.name)} aria-expanded={isOpen}><span className="menu-category-icon"><Icon size={20} /></span><span><b>{category.name}</b><small>{category.description} · {category.items.length} services</small></span><ChevronDown size={18} /></button>{isOpen && <div className="menu-subtypes">{category.items.map((item) => <div className="menu-subtype" key={item.name}><div><b>{item.name}</b><small>{item.detail}</small><span className="menu-duration"><Clock3 size={12} /> {item.duration}</span></div><strong>{item.price}</strong><button type="button" onClick={() => selectBookingService(item.name)} aria-label={`Select ${item.name}`}><span>Select</span><ArrowRight size={14} /></button></div>)}</div>}</div>; })}</div></section>}
 
         <section className="booking-section section-shell" ref={bookingRef} id="booking">
           <div className="booking-intro"><SectionLabel>Make it yours</SectionLabel><h2>Ready when<br /><em>you are.</em></h2><p>Tell us what you’re thinking and we’ll help shape the rest. Requests are confirmed personally over WhatsApp.</p><div className="booking-contact"><a href={`tel:${phone.replace(/\s/g, "")}`}><Phone size={16} /> {phone}</a><a href={whatsappHref} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Chat on WhatsApp</a></div></div>
-          <div className="booking-card">{submitted ? <div className="booking-success"><div className="success-icon"><Check size={24} /></div><SectionLabel>Request received</SectionLabel><h3>We’ll take it from here.</h3><p>Your preferred appointment details are ready. WhatsApp opened with your booking details. Tap below if you need to reopen it.</p><a className="button button-dark" href={submittedWhatsAppHref} target="_blank" rel="noreferrer">Continue on WhatsApp <ArrowRight size={17} /></a><button className="reset-link" onClick={() => setSubmitted(false)}>Edit request</button></div> : <form onSubmit={handleSubmit}><div className="form-heading"><span>01</span><div><h3>Build your appointment.</h3><p>Choose your service, stylist, date and time. We’ll confirm on WhatsApp.</p></div></div><div className="selected-services-panel"><span>Selected services</span><div>{selectedServices.map((serviceName) => <button type="button" key={serviceName} onClick={() => setSelectedService(serviceName)}>{serviceName} <X size={12} /></button>)}</div></div><label>Your name<input required name="name" placeholder="e.g. Ananya" /></label><div className="form-row"><label>Phone number<input required name="phone" type="tel" placeholder="98765 43210" /></label><label>Service<select name="service" value={selectedService} onChange={(event) => setSelectedService(event.target.value)}>{["Precision cut & finish", ...menuCategories.flatMap((category) => category.items.map((item) => item.name))].map((serviceName) => <option key={serviceName}>{serviceName}</option>)}</select></label></div><div className="form-row"><label>Preferred stylist<select name="provider" value={selectedProvider} onChange={(event) => setSelectedProvider(event.target.value)}>{providers.map((provider) => <option key={provider}>{provider}</option>)}</select></label><label>Preferred date<input required name="date" type="date" /></label></div><label>Preferred branch<select value={bookingBranch} onChange={(event) => setBookingBranch(event.target.value as "ulhasnagar" | "badlapur")}><option value="ulhasnagar">Ulhasnagar</option><option value="badlapur">Badlapur</option></select></label><label>Preferred time<select name="time" defaultValue="Anytime works">{appointmentTimes.map((time) => <option key={time}>{time}</option>)}</select></label><label>Anything we should know? <span className="optional">Optional</span><textarea name="note" placeholder="Tell us about your hair, an event, or a look you love…" rows={3} /></label><button className="button button-copper form-submit" type="submit">Request an appointment <ArrowRight size={17} /></button><p className="form-note"><Clock3 size={14} /> Usually replies within 30 minutes during open hours.</p></form>}</div>
+          <div className="booking-card">{submitted ? <div className="booking-success"><div className="success-icon"><Check size={24} /></div><SectionLabel>Request received</SectionLabel><h3>We’ll take it from here.</h3><p>Your preferred appointment details are ready. WhatsApp opened with your booking details. Tap below if you need to reopen it.</p><a className="button button-dark" href={submittedWhatsAppHref} target="_blank" rel="noreferrer">Continue on WhatsApp <ArrowRight size={17} /></a><button className="reset-link" onClick={() => setSubmitted(false)}>Edit request</button></div> : <form onSubmit={handleSubmit}><div className="form-heading"><span>01</span><div><h3>Build your appointment.</h3><p>Choose your service, stylist, date and time. We’ll confirm on WhatsApp.</p></div></div><div className="selected-services-panel"><span>Selected services</span><div>{selectedServices.length ? selectedServices.map((serviceName) => <button type="button" key={serviceName} onClick={() => removeSelectedService(serviceName)}><span>{serviceName}</span><strong>{getServicePrice(serviceName)}</strong><X size={12} /></button>) : <small>No extra services selected</small>}</div></div><label>Your name<input required name="name" placeholder="e.g. Ananya" /></label><div className="form-row"><label>Phone number<input required name="phone" type="tel" placeholder="98765 43210" /></label><label>Service<select name="service" value={selectedService} onChange={(event) => setSelectedService(event.target.value)}>{["Precision cut & finish", ...menuCategories.flatMap((category) => category.items.map((item) => item.name))].map((serviceName) => <option key={serviceName}>{serviceName}</option>)}</select></label></div><div className="form-row"><label>Preferred stylist<select name="provider" value={selectedProvider} onChange={(event) => setSelectedProvider(event.target.value)}>{providers.map((provider) => <option key={provider}>{provider}</option>)}</select></label><label>Preferred date<input required name="date" type="date" /></label></div><label>Preferred branch<select value={bookingBranch} onChange={(event) => setBookingBranch(event.target.value as "ulhasnagar" | "badlapur")}><option value="ulhasnagar">Ulhasnagar</option><option value="badlapur">Badlapur</option></select></label><label>Preferred time<select name="time" defaultValue="Anytime works">{appointmentTimes.map((time) => <option key={time}>{time}</option>)}</select></label><label>Anything we should know? <span className="optional">Optional</span><textarea name="note" placeholder="Tell us about your hair, an event, or a look you love…" rows={3} /></label><button className="button button-copper form-submit" type="submit">Request an appointment <ArrowRight size={17} /></button><p className="form-note"><Clock3 size={14} /> Usually replies within 30 minutes during open hours.</p></form>}</div>
         </section>
 
         <section className="review-section" id="reviews">
