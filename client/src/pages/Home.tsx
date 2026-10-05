@@ -37,7 +37,7 @@ const whatsappHref = "https://wa.me/919222631384";
 const mapsHref = "https://www.google.com/maps/search/?api=1&query=The+Creative+Hair+Solutions+Unisex+Salon+Ulhasnagar";
 
 const images = {
-  hero: "/creative-hero.jpg",
+  hero: "/manus-storage/creative-hero_a74c00da.jpg",
   detail: "/manus-storage/creative-detail_c5c422ac.jpg",
   styling: "/manus-storage/creative-styling_a4cabbe1.jpg",
   interior: "/manus-storage/creative-interior_920f61c1.jpg",
