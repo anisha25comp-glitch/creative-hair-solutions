@@ -997,3 +997,6 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 .invoice-whatsapp { border-color: #4c9a67; color: #25663c; }
 .invoice-whatsapp:hover { background: #4c9a67; color: #fff; }
 .bill-history-row small { display: block; margin-top: 4px; color: #876e62; font-size: 10px; }
+
+/* Keep the supplied CHS artwork itself unchanged; only size it cleanly in the header. */
+.site-logo-image.site-header-logo { width: 54px; height: 54px; object-fit: contain; border: 0; border-radius: 0; padding: 0; background: transparent; filter: none; }

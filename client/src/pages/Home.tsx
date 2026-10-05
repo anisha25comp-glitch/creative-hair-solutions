@@ -447,7 +447,7 @@ export default function Home() {
     <div className="salon-site">
       <header className="site-header">
         <a className="brand" href="#top" aria-label="The Creative Hair Solutions home">
-          <img className="site-logo-image site-header-logo" src="/chs-logo.png" alt="The Creative Hair Solutions logo" />
+          <img className="site-logo-image site-header-logo" src="/manus-storage/CHs-Logo(1)(1)_cd63bee3.png" alt="The Creative Hair Solutions logo" />
           <span className="brand-copy">
             <strong>THE CREATIVE</strong>
             <span>Hair Solutions · Family Salon</span>
