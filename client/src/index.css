@@ -993,3 +993,7 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 .invoice-print { border-color: #8d7768; }
 .bill-history-row { align-items: center; }
 @media (max-width: 800px) { .invoice-actions { min-width: 0; } .staff-table-head span:last-child { display: none; } .bill-history-row { grid-template-columns: 1fr 1fr; gap: 12px; } .bill-history-row .invoice-actions { grid-column: 1 / -1; } }
+
+.invoice-whatsapp { border-color: #4c9a67; color: #25663c; }
+.invoice-whatsapp:hover { background: #4c9a67; color: #fff; }
+.bill-history-row small { display: block; margin-top: 4px; color: #876e62; font-size: 10px; }
