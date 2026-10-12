@@ -37,10 +37,7 @@ const whatsappHref = "https://wa.me/919222631384";
 const mapsHref = "https://www.google.com/maps/search/?api=1&query=The+Creative+Hair+Solutions+Unisex+Salon+Ulhasnagar";
 
 const images = {
-  hero: "/manus-storage/creative-hero_a74c00da.jpg",
-  detail: "/manus-storage/creative-detail_c5c422ac.jpg",
-  styling: "/manus-storage/creative-styling_a4cabbe1.jpg",
-  interior: "/manus-storage/creative-interior_920f61c1.jpg",
+  hero: `${import.meta.env.BASE_URL}creative-hero.webp`,
 };
 
 const services = [
@@ -447,7 +444,7 @@ export default function Home() {
     <div className="salon-site">
       <header className="site-header">
         <a className="brand" href="#top" aria-label="The Creative Hair Solutions home">
-          <img className="site-logo-image site-header-logo" src="/manus-storage/CHs-Logo(1)(1)_cd63bee3.png" alt="The Creative Hair Solutions logo" />
+          <img className="site-logo-image site-header-logo" src={`${import.meta.env.BASE_URL}chs-logo.png`} alt="The Creative Hair Solutions logo" />
           <span className="brand-copy">
             <strong>THE CREATIVE</strong>
             <span>Hair Solutions · Family Salon</span>
