@@ -43,6 +43,6 @@ export default function Store() {
         {visible.length === 0 && <div className="store-no-results">No products found. Try another search.</div>}
       </section>
     </main>
-    <footer className="store-page-footer"><span>THE CREATIVE · HAIR SOLUTIONS · FAMILY SALON</span><a href="/">Return to salon <ArrowRight size={14} /></a></footer>
+    <footer className="store-page-footer"><span>THE CREATIVE · HAIR SOLUTIONS · FAMILY SALON</span><a href={import.meta.env.BASE_URL}>Return to salon <ArrowRight size={14} /></a></footer>
   </div>;
 }

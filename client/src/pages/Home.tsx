@@ -455,12 +455,12 @@ export default function Home() {
           <button className="nav-text-button" onClick={openFullMenu}>Full menu</button>
           <a href="#reviews">Reviews</a>
           <a href="#visit">Visit us</a>
-          <a href="/staff">Staff</a>
-          <a href="/admin">Admin</a>
+          <a href={`${import.meta.env.BASE_URL}staff`}>Staff</a>
+          <a href={`${import.meta.env.BASE_URL}admin`}>Admin</a>
           <a className="header-icon-link" href="https://www.instagram.com/the_creative_unisex_salon?utm_source=qr&stkn=MW53aHN6Njl2cWo4Zw%3D%3D" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={16} /></a>
-          <a className="header-icon-link header-store-link" href="/store" aria-label="Our store"><ShoppingBag size={16} /><span>Our store</span></a>
+          <a className="header-icon-link header-store-link" href={`${import.meta.env.BASE_URL}store`} aria-label="Our store"><ShoppingBag size={16} /><span>Our store</span></a>
         </nav>
-        <details ref={moreMenuRef} className="more-menu"><summary aria-label="Open navigation menu"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="#services">Services</a><button type="button" onClick={openFullMenu}>Full menu</button><a href="#reviews">Reviews</a><a href="#visit">Visit us</a><a href="/store">Our store</a><a href="/staff">Staff sign in</a><a href="/admin">Admin sign in</a><a href="https://www.instagram.com/the_creative_unisex_salon?utm_source=qr&stkn=MW53aHN6Njl2cWo4Zw%3D%3D" target="_blank" rel="noreferrer">Instagram</a></div></details>
+        <details ref={moreMenuRef} className="more-menu"><summary aria-label="Open navigation menu"><MoreHorizontal size={22} /></summary><div className="more-menu-popover"><a href="#services">Services</a><button type="button" onClick={openFullMenu}>Full menu</button><a href="#reviews">Reviews</a><a href="#visit">Visit us</a><a href={`${import.meta.env.BASE_URL}store`}>Our store</a><a href={`${import.meta.env.BASE_URL}staff`}>Staff sign in</a><a href={`${import.meta.env.BASE_URL}admin`}>Admin sign in</a><a href="https://www.instagram.com/the_creative_unisex_salon?utm_source=qr&stkn=MW53aHN6Njl2cWo4Zw%3D%3D" target="_blank" rel="noreferrer">Instagram</a></div></details>
       </header>
 
       <main id="top">
