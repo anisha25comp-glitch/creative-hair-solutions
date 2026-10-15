@@ -1,6 +1,6 @@
 import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { appointments, bills, clients, enquiries, feedback, InsertAppointment, InsertBill, InsertClient, InsertEnquiry, InsertFeedback, InsertUser, users } from "../drizzle/schema";
+import { appointments, bills, clients, enquiries, feedback, InsertAppointment, InsertBill, InsertClient, InsertEnquiry, InsertFeedback, InsertProduct, InsertProvider, InsertService, InsertUser, products, providers, services, stockMovements, users } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -44,3 +44,22 @@ export async function createClient(data: InsertClient) { const db = await getDb(
 export async function listFeedback() { const db = await getDb(); if (!db) return []; return db.select().from(feedback).orderBy(desc(feedback.createdAt)).limit(100); }
 export async function createFeedback(data: InsertFeedback) { const db = await getDb(); if (!db) throw new Error("Database is not available"); const result = await db.insert(feedback).values(data); return result[0].insertId; }
 export async function updateFeedbackStatus(id: number, status: "new" | "reviewed" | "resolved") { const db = await getDb(); if (!db) throw new Error("Database is not available"); await db.update(feedback).set({ status }).where(eq(feedback.id, id)); return { success: true } as const; }
+
+export async function listServices(includeInactive = false) { const db = await getDb(); if (!db) throw new Error("Database is not available"); return db.select().from(services).where(includeInactive ? undefined : eq(services.active, 1)).orderBy(services.name); }
+export async function createService(data: InsertService) { const db = await getDb(); if (!db) throw new Error("Database is not available"); const result = await db.insert(services).values(data); return result[0].insertId; }
+export async function updateService(id: number, data: Partial<InsertService>) { const db = await getDb(); if (!db) throw new Error("Database is not available"); await db.update(services).set({ ...data, updatedAt: new Date() }).where(eq(services.id, id)); return { success: true } as const; }
+export async function listProviders(includeInactive = false) { const db = await getDb(); if (!db) throw new Error("Database is not available"); return db.select().from(providers).where(includeInactive ? undefined : eq(providers.active, 1)).orderBy(providers.fullName); }
+export async function createProvider(data: InsertProvider) { const db = await getDb(); if (!db) throw new Error("Database is not available"); const result = await db.insert(providers).values(data); return result[0].insertId; }
+export async function updateProvider(id: number, data: Partial<InsertProvider>) { const db = await getDb(); if (!db) throw new Error("Database is not available"); await db.update(providers).set({ ...data, updatedAt: new Date() }).where(eq(providers.id, id)); return { success: true } as const; }
+export async function listProducts(includeInactive = false) { const db = await getDb(); if (!db) throw new Error("Database is not available"); return db.select().from(products).where(includeInactive ? undefined : eq(products.active, 1)).orderBy(products.name); }
+export async function createProduct(data: InsertProduct) { const db = await getDb(); if (!db) throw new Error("Database is not available"); const result = await db.insert(products).values(data); return result[0].insertId; }
+export async function receiveStock(productId: number, quantity: number, reason: string | undefined, createdBy: number) {
+  const db = await getDb(); if (!db) throw new Error("Database is not available");
+  const current = await db.select({ quantity: products.quantity }).from(products).where(eq(products.id, productId)).limit(1);
+  if (!current[0]) throw new Error("Product not found");
+  const quantityAfter = current[0].quantity + quantity;
+  await db.update(products).set({ quantity: quantityAfter, updatedAt: new Date() }).where(eq(products.id, productId));
+  await db.insert(stockMovements).values({ productId, movementType: "purchase", quantity, quantityAfter, reason, createdBy });
+  return { quantityAfter } as const;
+}
+export async function listStockMovements(productId?: number) { const db = await getDb(); if (!db) throw new Error("Database is not available"); return db.select().from(stockMovements).where(productId ? eq(stockMovements.productId, productId) : undefined).orderBy(desc(stockMovements.createdAt)); }

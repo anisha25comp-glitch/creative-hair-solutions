@@ -86,6 +86,66 @@ export const feedback = mysqlTable("feedback", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+export const services = mysqlTable("services", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 160 }).notNull().unique(),
+  category: varchar("category", { length: 100 }).notNull(),
+  description: text("description"),
+  price: int("price").notNull(),
+  durationMinutes: int("durationMinutes").notNull(),
+  taxPercent: int("taxPercent").default(18).notNull(),
+  active: int("active").default(1).notNull(),
+  createdBy: int("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export const providers = mysqlTable("providers", {
+  id: int("id").autoincrement().primaryKey(),
+  fullName: varchar("fullName", { length: 160 }).notNull(),
+  phone: varchar("phone", { length: 32 }).notNull(),
+  email: varchar("email", { length: 320 }),
+  role: varchar("role", { length: 80 }).notNull(),
+  specialization: varchar("specialization", { length: 160 }),
+  joiningDate: timestamp("joiningDate"),
+  commissionType: mysqlEnum("commissionType", ["percentage", "fixed"]).default("percentage").notNull(),
+  commissionValue: int("commissionValue").default(0).notNull(),
+  workingHours: varchar("workingHours", { length: 120 }),
+  active: int("active").default(1).notNull(),
+  createdBy: int("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export const products = mysqlTable("products", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 160 }).notNull(),
+  sku: varchar("sku", { length: 80 }).notNull().unique(),
+  category: varchar("category", { length: 100 }).notNull(),
+  supplier: varchar("supplier", { length: 160 }),
+  purchaseCost: int("purchaseCost").default(0).notNull(),
+  sellingPrice: int("sellingPrice").default(0).notNull(),
+  quantity: int("quantity").default(0).notNull(),
+  minimumStock: int("minimumStock").default(0).notNull(),
+  expiryDate: timestamp("expiryDate"),
+  active: int("active").default(1).notNull(),
+  createdBy: int("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export const stockMovements = mysqlTable("stockMovements", {
+  id: int("id").autoincrement().primaryKey(),
+  productId: int("productId").notNull(),
+  movementType: mysqlEnum("movementType", ["purchase", "adjustment", "sale", "refund"]).notNull(),
+  quantity: int("quantity").notNull(),
+  quantityAfter: int("quantityAfter").notNull(),
+  reason: varchar("reason", { length: 240 }),
+  referenceId: varchar("referenceId", { length: 80 }),
+  createdBy: int("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Appointment = typeof appointments.$inferSelect;
@@ -98,3 +158,11 @@ export type Client = typeof clients.$inferSelect;
 export type InsertClient = typeof clients.$inferInsert;
 export type Feedback = typeof feedback.$inferSelect;
 export type InsertFeedback = typeof feedback.$inferInsert;
+export type Service = typeof services.$inferSelect;
+export type InsertService = typeof services.$inferInsert;
+export type Provider = typeof providers.$inferSelect;
+export type InsertProvider = typeof providers.$inferInsert;
+export type Product = typeof products.$inferSelect;
+export type InsertProduct = typeof products.$inferInsert;
+export type StockMovement = typeof stockMovements.$inferSelect;
+export type InsertStockMovement = typeof stockMovements.$inferInsert;

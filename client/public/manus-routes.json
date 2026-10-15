@@ -1,0 +1,1 @@
+{"routes":[{"path":"/","title":"Salon website"},{"path":"/store","title":"Store"},{"path":"/staff","title":"Staff portal"},{"path":"/staff/:rest*","title":"Staff workspace"},{"path":"/admin","title":"Admin dashboard"},{"path":"/admin/:rest*","title":"Admin workspace"},{"path":"/component-showcase","title":"Component showcase"},{"path":"/404","title":"Not found"}]}

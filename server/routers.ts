@@ -1,10 +1,11 @@
 import { COOKIE_NAME } from "@shared/const";
 import { z } from "zod";
+import { parse as parseCookieHeader } from "cookie";
 import { getSessionCookieOptions } from "./_core/cookies";
-import { clearLocalSession, createLocalSession, setLocalSession, verifyLocalCredentials } from "./_core/localAuth";
+import { clearLocalSession, createLocalSession, LOCAL_AUTH_COOKIE, setLocalSession, verifyLocalCredentials } from "./_core/localAuth";
 import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, publicProcedure, router, staffProcedure } from "./_core/trpc";
-import { createAppointment, createBill, createClient, createEnquiry, createFeedback, listAppointments, listBills, listClients, listEnquiries, listFeedback, updateAppointmentStatus, updateEnquiryStatus, updateFeedbackStatus } from "./db";
+import { createAppointment, createBill, createClient, createEnquiry, createFeedback, createProduct, createProvider, createService, listAppointments, listBills, listClients, listEnquiries, listFeedback, listProducts, listProviders, listServices, listStockMovements, receiveStock, updateAppointmentStatus, updateEnquiryStatus, updateFeedbackStatus, updateProvider, updateService } from "./db";
 
 const appointmentStatus = z.enum(["booked", "confirmed", "completed", "cancelled"]);
 const paymentMethod = z.enum(["cash", "upi", "card", "pending"]);
@@ -12,13 +13,16 @@ const enquiryStatus = z.enum(["pending", "contacted", "converted", "lost"]);
 const branch = z.enum(["ulhasnagar", "badlapur"]);
 const gender = z.enum(["female", "male", "other"]);
 const feedbackStatus = z.enum(["new", "reviewed", "resolved"]);
+const serviceInput = z.object({ name: z.string().trim().min(2), category: z.string().trim().min(2), description: z.string().trim().max(2000).optional(), price: z.number().int().nonnegative(), durationMinutes: z.number().int().positive(), taxPercent: z.number().int().min(0).max(100).default(18), active: z.number().int().min(0).max(1).default(1) });
+const providerInput = z.object({ fullName: z.string().trim().min(2), phone: z.string().trim().min(7), email: z.string().email().optional().or(z.literal("")), role: z.string().trim().min(2), specialization: z.string().trim().max(160).optional(), joiningDate: z.coerce.date().optional(), commissionType: z.enum(["percentage", "fixed"]).default("percentage"), commissionValue: z.number().int().nonnegative().default(0), workingHours: z.string().trim().max(120).optional(), active: z.number().int().min(0).max(1).default(1) });
+const productInput = z.object({ name: z.string().trim().min(2), sku: z.string().trim().min(2).max(80), category: z.string().trim().min(2), supplier: z.string().trim().max(160).optional(), purchaseCost: z.number().int().nonnegative().default(0), sellingPrice: z.number().int().nonnegative().default(0), quantity: z.number().int().nonnegative().default(0), minimumStock: z.number().int().nonnegative().default(0), expiryDate: z.coerce.date().optional(), active: z.number().int().min(0).max(1).default(1) });
 
 export const appRouter = router({
   system: systemRouter,
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
     localLogin: publicProcedure.input(z.object({ username: z.string().min(1), password: z.string().min(1) })).mutation(async ({ input, ctx }) => { const role = verifyLocalCredentials(input.username, input.password); if (!role) throw new Error("Invalid sign-in details"); const token = await createLocalSession(role); setLocalSession(ctx.res, ctx.req, token); return { role } as const; }),
-    logout: publicProcedure.mutation(({ ctx }) => { const cookieOptions = getSessionCookieOptions(ctx.req); ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 }); clearLocalSession(ctx.res, ctx.req); return { success: true } as const; }),
+    logout: publicProcedure.mutation(({ ctx }) => { const cookieOptions = getSessionCookieOptions(ctx.req); const cookies = parseCookieHeader(ctx.req.headers.cookie ?? ""); ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 }); if (cookies[LOCAL_AUTH_COOKIE]) clearLocalSession(ctx.res, ctx.req); return { success: true } as const; }),
   }),
   publicBooking: router({
     create: publicProcedure.input(z.object({ customerName: z.string().min(2), phone: z.string().min(7), branch, service: z.string().min(2), appointmentAt: z.coerce.date(), notes: z.string().optional() })).mutation(({ input }) => createAppointment({ ...input, status: "booked" })),
@@ -37,6 +41,16 @@ export const appRouter = router({
     feedback: staffProcedure.query(() => listFeedback()),
     createFeedback: staffProcedure.input(z.object({ clientName: z.string().min(2), contactNumber: z.string().optional(), branch, rating: z.number().int().min(1).max(5), comments: z.string().min(2), status: feedbackStatus.default("new") })).mutation(({ input, ctx }) => createFeedback({ ...input, createdBy: ctx.user.id })),
     updateFeedbackStatus: staffProcedure.input(z.object({ id: z.number().int().positive(), status: feedbackStatus })).mutation(({ input }) => updateFeedbackStatus(input.id, input.status)),
+    services: staffProcedure.input(z.object({ includeInactive: z.boolean().optional() }).default({})).query(({ input }) => listServices(input.includeInactive ?? false)),
+    createService: adminProcedure.input(serviceInput).mutation(({ input, ctx }) => createService({ ...input, createdBy: ctx.user.id, description: input.description || null })),
+    updateService: adminProcedure.input(z.object({ id: z.number().int().positive(), data: serviceInput.partial() })).mutation(({ input }) => updateService(input.id, input.data)),
+    providers: staffProcedure.input(z.object({ includeInactive: z.boolean().optional() }).default({})).query(({ input }) => listProviders(input.includeInactive ?? false)),
+    createProvider: adminProcedure.input(providerInput).mutation(({ input, ctx }) => createProvider({ ...input, createdBy: ctx.user.id, email: input.email || null, specialization: input.specialization || null, workingHours: input.workingHours || null })),
+    updateProvider: adminProcedure.input(z.object({ id: z.number().int().positive(), data: providerInput.partial() })).mutation(({ input }) => updateProvider(input.id, input.data)),
+    products: staffProcedure.input(z.object({ includeInactive: z.boolean().optional() }).default({})).query(({ input }) => listProducts(input.includeInactive ?? false)),
+    createProduct: adminProcedure.input(productInput).mutation(({ input, ctx }) => createProduct({ ...input, createdBy: ctx.user.id, supplier: input.supplier || null })),
+    receiveStock: adminProcedure.input(z.object({ productId: z.number().int().positive(), quantity: z.number().int().positive(), reason: z.string().trim().max(240).optional() })).mutation(({ input, ctx }) => receiveStock(input.productId, input.quantity, input.reason, ctx.user.id)),
+    stockMovements: staffProcedure.input(z.object({ productId: z.number().int().positive().optional() }).default({})).query(({ input }) => listStockMovements(input.productId)),
   }),
   admin: router({
     promoteStaff: adminProcedure.input(z.object({ openId: z.string().min(1) })).mutation(() => ({ success: true })),
