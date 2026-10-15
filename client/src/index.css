@@ -1023,3 +1023,13 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 .staff-stats strong { display: block; margin: 8px 0 4px; font-size: 22px; color: var(--foreground, #241e1b); }
 @media (max-width: 900px) { .staff-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .staff-stats { grid-template-columns: 1fr; } }
+
+/* Reports-only readability fix */
+.reports-workspace .staff-panel, .reports-workspace .staff-panel.staff-queue { background: #fffdf9; color: #38231c; }
+.reports-workspace .staff-table-head { background: #f6eee8; color: #694b3e; }
+.reports-workspace .staff-table-row { background: #fffdf9; color: #4a372f; }
+.reports-workspace .staff-table-row strong, .reports-workspace .staff-table-row b { color: #38231c; }
+.reports-workspace .staff-stats article { background: #fffdf9; color: #38231c; }
+.reports-workspace .staff-stats span, .reports-workspace .staff-stats small { color: #745b50; }
+.reports-workspace .staff-stats strong { color: #38231c; }
+.reports-workspace input, .reports-workspace select { background: #fffdf9; color: #38231c; }
