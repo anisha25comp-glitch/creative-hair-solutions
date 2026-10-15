@@ -206,7 +206,7 @@
 | Customers/CRM | ◐ Existing partial flow only | Existing client form/list compiles; unified history not implemented/tested |
 | Appointments | ◐ Existing partial flow only | Existing appointment flow compiles; provider availability/conflict flow not implemented/tested |
 | Billing/POS | ☐ Not tested | |
-| Inventory/purchases | ◐ Implemented with readable current-stock view | Available quantity, reorder level, in-stock/low/out-of-stock status, and balance-after movement labels added; production DB migration and billing stock deduction still open |
+| Inventory/purchases | ◐ Implemented with readable current-stock view | Available quantity, reorder level, in-stock/low/out-of-stock status, and balance-after movement labels added; SKU is now optional and auto-generated; production DB migration and billing stock deduction still open |
 | Payments/expenses/attendance/commissions | ◐ Expenses implemented | Product/salary/operating expense form, staff linkage, history, and category totals added; payments/attendance/commission settlement remain open |
 | Memberships/packages/loyalty | ☐ Incomplete | Not implemented |
 | Reports/exports | ◐ Daily reports implemented | Sales, collections, bills, appointments, expenses, category totals, and net-after-expenses report added; CSV/PDF/report breadth remains open |
