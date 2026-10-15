@@ -148,7 +148,7 @@ export const stockMovements = mysqlTable("stockMovements", {
 
 export const expenses = mysqlTable("expenses", {
   id: int("id").autoincrement().primaryKey(),
-  category: mysqlEnum("category", ["product", "salary", "rent", "utilities", "marketing", "other"]).notNull(),
+  category: mysqlEnum("category", ["product", "salary", "rent", "utilities", "marketing", "equipment", "maintenance", "supplies", "cleaning", "internet", "taxes", "travel", "other"]).notNull(),
   description: varchar("description", { length: 240 }).notNull(),
   amount: int("amount").notNull(),
   expenseDate: timestamp("expenseDate").notNull(),
