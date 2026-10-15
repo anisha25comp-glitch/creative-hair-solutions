@@ -1,6 +1,7 @@
 import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { appointments, bills, clients, enquiries, expenses, feedback, InsertAppointment, InsertBill, InsertClient, InsertEnquiry, InsertExpense, InsertFeedback, InsertProduct, InsertProvider, InsertService, InsertUser, products, providers, services, stockMovements, users } from "../drizzle/schema";
+import { defaultServices } from "./defaultCatalog";
 import { ENV } from "./_core/env";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -49,7 +50,7 @@ export async function listFeedback() { const db = await getDb(); if (!db) return
 export async function createFeedback(data: InsertFeedback) { const db = await getDb(); if (!db) throw new Error("Database is not available"); const result = await db.insert(feedback).values(data); return result[0].insertId; }
 export async function updateFeedbackStatus(id: number, status: "new" | "reviewed" | "resolved") { const db = await getDb(); if (!db) throw new Error("Database is not available"); await db.update(feedback).set({ status }).where(eq(feedback.id, id)); return { success: true } as const; }
 
-export async function listServices(includeInactive = false) { const db = await getDb(); if (!db) { const data = await readLocalOperations(); return data.services.filter(row => includeInactive || row.active).sort((a, b) => a.name.localeCompare(b.name)); } return db.select().from(services).where(includeInactive ? undefined : eq(services.active, 1)).orderBy(services.name); }
+export async function listServices(includeInactive = false) { const db = await getDb(); if (!db) { const data = await readLocalOperations(); if (!data.services.length) { data.services = defaultServices.map(([name, category, price], index) => ({ id: index + 1, name, category, price, durationMinutes: 60, taxPercent: 18, active: 1, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() })); await writeLocalOperations(data); } return data.services.filter(row => includeInactive || row.active).sort((a, b) => a.name.localeCompare(b.name)); } return db.select().from(services).where(includeInactive ? undefined : eq(services.active, 1)).orderBy(services.name); }
 export async function createService(data: InsertService) { const db = await getDb(); if (!db) { const state = await readLocalOperations(); const id = state.services.reduce((max, row) => Math.max(max, row.id), 0) + 1; state.services.push({ ...data, id, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }); await writeLocalOperations(state); return id; } const result = await db.insert(services).values(data); return result[0].insertId; }
 export async function updateService(id: number, data: Partial<InsertService>) { const db = await getDb(); if (!db) { const state = await readLocalOperations(); const row = state.services.find(item => item.id === id); if (!row) throw new Error("Service not found"); Object.assign(row, data, { updatedAt: new Date().toISOString() }); await writeLocalOperations(state); return { success: true } as const; } await db.update(services).set({ ...data, updatedAt: new Date() }).where(eq(services.id, id)); return { success: true } as const; }
 const DEFAULT_PROVIDERS = ["Sonu", "Ankit", "Golu", "Shivam", "Arti", "Greta", "Vidhya", "Shikha", "Priyanka"];

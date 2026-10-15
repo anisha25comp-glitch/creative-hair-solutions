@@ -947,6 +947,15 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 .billing-summary strong { color: #59473d; }
 .billing-summary .billing-total { padding-top: 12px; border-top: 1px solid #dfcbbb; color: #38231c; font-size: 13px; }
 .billing-summary .billing-total strong { color: #a05e42; font-size: 18px; }
+.billing-lines { display: flex; flex-direction: column; gap: 12px; margin: 6px 0 2px; }
+.billing-line { display: grid; grid-template-columns: minmax(220px, 1.5fr) minmax(110px, .7fr) minmax(170px, 1fr) minmax(130px, .8fr) auto; align-items: end; gap: 10px; padding: 15px; border: 1px solid #eadbcf; border-radius: 12px; background: #fffaf5; }
+.billing-line > div { min-width: 0; }
+.billing-line button { min-height: 40px; white-space: nowrap; }
+.service-picker { position: relative; width: 100%; }
+.service-picker > input { width: 100%; }
+.service-picker > small { display: block; margin-top: 5px; color: #a05e42; font-size: 10px; }
+@media (max-width: 900px) { .billing-line { grid-template-columns: 1fr 1fr; } .billing-line > div:first-child { grid-column: 1 / -1; } }
+@media (max-width: 560px) { .billing-line { grid-template-columns: 1fr; } .billing-line > div:first-child { grid-column: auto; } }
 .module-workspace { margin-top: 26px; }
 .module-hero { display: flex; align-items: flex-start; gap: 18px; padding: 28px; border: 1px solid #e2d2c5; background: linear-gradient(135deg, #fffdf9, #f7eee7); }
 .module-hero > svg { flex: 0 0 auto; color: #b67859; }
