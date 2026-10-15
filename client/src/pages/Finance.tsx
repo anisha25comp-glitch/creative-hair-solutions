@@ -5,8 +5,8 @@ import { trpc } from "@/lib/trpc";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-const today = new Date().toISOString().slice(0, 10);
-const money = (value: number) => `₹${Number(value || 0).toLocaleString("en-IN")}`;
+const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
+const money = (value: number) => `₹${Number(value || 0).toLocaleString("en-IN")}`; const indiaDate = (value: string, end = false) => new Date(`${value}T${end ? "23:59:59" : "00:00:00"}+05:30`);
 
 export function ExpensesWorkspace() {
   const utils = trpc.useUtils();
@@ -20,7 +20,7 @@ export function ExpensesWorkspace() {
 export function ReportsWorkspace() {
   const [from, setFrom] = useState(today);
   const [to, setTo] = useState(today);
-  const report = trpc.staff.reports.useQuery({ from: new Date(`${from}T00:00:00`), to: new Date(`${to}T23:59:59`) });
+  const report = trpc.staff.reports.useQuery({ from: indiaDate(from), to: indiaDate(to, true) });
   const categories = useMemo(() => Object.entries(report.data?.expenseByCategory || {}), [report.data]);
   return <div className="space-y-5"><section className="staff-panel"><div className="staff-panel-heading"><div><span className="admin-kicker">Real transaction summary</span><h2>Reports</h2></div><span>₹ currency</span></div><div className="staff-form-row"><label><Label>From</Label><Input type="date" value={from} onChange={event => setFrom(event.target.value)} /></label><label><Label>To</Label><Input type="date" value={to} onChange={event => setTo(event.target.value)} /></label></div>{report.isLoading ? <p>Loading report…</p> : report.isError ? <p role="alert">Unable to load report. Check the database and retry.</p> : <><div className="staff-stats"><article><span>Sales</span><strong>{money(report.data?.sales || 0)}</strong><small>Completed bills</small></article><article><span>Collections</span><strong>{money(report.data?.collections || 0)}</strong><small>Non-pending bills</small></article><article><span>Expenses</span><strong>{money(report.data?.expenses || 0)}</strong><small>All recorded spend</small></article><article><span>Net after expenses</span><strong>{money((report.data?.collections || 0) - (report.data?.expenses || 0))}</strong><small>Collections less expenses</small></article></div><div className="staff-table"><div className="staff-table-head"><span>Metric</span><span>Value</span><span>Detail</span></div><div className="staff-table-row"><span>Bills</span><strong>{report.data?.bills || 0}</strong><span>In selected range</span></div><div className="staff-table-row"><span>Appointments</span><strong>{report.data?.appointments || 0}</strong><span>In selected range</span></div>{categories.map(([category, value]) => <div className="staff-table-row" key={category}><span>Expense: {category}</span><strong>{money(value)}</strong><span>Recorded expenses</span></div>)}</div><div className="staff-panel staff-queue"><div className="staff-panel-heading"><div><span className="admin-kicker">Daily staff output</span><h2>How much each staff member did</h2><small>Based on bills in the selected date range.</small></div></div><div className="staff-table"><div className="staff-table-head"><span>Staff member</span><span>Bills</span><span>Sales handled</span><span>Work amount</span></div>{(report.data?.staffPerformance || []).map((row: any) => <div className="staff-table-row" key={row.staff}><span><b>{row.staff}</b></span><strong>{row.bills}</strong><span>{money(row.sales)}</span><span>{money(row.workAmount)}</span></div>)}</div></div></>}</section></div>;
 }
