@@ -5,7 +5,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { clearLocalSession, createLocalSession, LOCAL_AUTH_COOKIE, setLocalSession, verifyLocalCredentials } from "./_core/localAuth";
 import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, publicProcedure, router, staffProcedure } from "./_core/trpc";
-import { createAppointment, createBill, createClient, createEnquiry, createFeedback, createProduct, createProvider, createService, listAppointments, listBills, listClients, listEnquiries, listFeedback, listProducts, listProviders, listServices, listStockMovements, receiveStock, updateAppointmentStatus, updateEnquiryStatus, updateFeedbackStatus, updateProvider, updateService } from "./db";
+import { createAppointment, createBill, createClient, createEnquiry, createExpense, createFeedback, createProduct, createProvider, createService, listAppointments, listBills, listClients, listEnquiries, listExpenses, listFeedback, listProducts, listProviders, listServices, listStockMovements, receiveStock, updateAppointmentStatus, updateEnquiryStatus, updateFeedbackStatus, updateProvider, updateService } from "./db";
 
 const appointmentStatus = z.enum(["booked", "confirmed", "completed", "cancelled"]);
 const paymentMethod = z.enum(["cash", "upi", "card", "pending"]);
@@ -16,6 +16,7 @@ const feedbackStatus = z.enum(["new", "reviewed", "resolved"]);
 const serviceInput = z.object({ name: z.string().trim().min(2), category: z.string().trim().min(2), description: z.string().trim().max(2000).optional(), price: z.number().int().nonnegative(), durationMinutes: z.number().int().positive(), taxPercent: z.number().int().min(0).max(100).default(18), active: z.number().int().min(0).max(1).default(1) });
 const providerInput = z.object({ fullName: z.string().trim().min(2), phone: z.string().trim().min(7), email: z.string().email().optional().or(z.literal("")), role: z.string().trim().min(2), specialization: z.string().trim().max(160).optional(), joiningDate: z.coerce.date().optional(), commissionType: z.enum(["percentage", "fixed"]).default("percentage"), commissionValue: z.number().int().nonnegative().default(0), workingHours: z.string().trim().max(120).optional(), active: z.number().int().min(0).max(1).default(1) });
 const productInput = z.object({ name: z.string().trim().min(2), sku: z.string().trim().min(2).max(80), category: z.string().trim().min(2), supplier: z.string().trim().max(160).optional(), purchaseCost: z.number().int().nonnegative().default(0), sellingPrice: z.number().int().nonnegative().default(0), quantity: z.number().int().nonnegative().default(0), minimumStock: z.number().int().nonnegative().default(0), expiryDate: z.coerce.date().optional(), active: z.number().int().min(0).max(1).default(1) });
+const expenseInput = z.object({ category: z.enum(["product", "salary", "rent", "utilities", "marketing", "other"]), description: z.string().trim().min(2).max(240), amount: z.number().int().positive(), expenseDate: z.coerce.date(), paymentMethod: z.enum(["cash", "upi", "card", "bank"]).default("cash"), providerId: z.number().int().positive().optional() });
 
 export const appRouter = router({
   system: systemRouter,
@@ -51,6 +52,14 @@ export const appRouter = router({
     createProduct: adminProcedure.input(productInput).mutation(({ input, ctx }) => createProduct({ ...input, createdBy: ctx.user.id, supplier: input.supplier || null })),
     receiveStock: adminProcedure.input(z.object({ productId: z.number().int().positive(), quantity: z.number().int().positive(), reason: z.string().trim().max(240).optional() })).mutation(({ input, ctx }) => receiveStock(input.productId, input.quantity, input.reason, ctx.user.id)),
     stockMovements: staffProcedure.input(z.object({ productId: z.number().int().positive().optional() }).default({})).query(({ input }) => listStockMovements(input.productId)),
+    expenses: staffProcedure.query(() => listExpenses()),
+    createExpense: adminProcedure.input(expenseInput).mutation(({ input, ctx }) => createExpense({ ...input, createdBy: ctx.user.id })),
+    reports: staffProcedure.input(z.object({ from: z.coerce.date(), to: z.coerce.date() })).query(async ({ input }) => {
+      const [bills, appointments, expenses] = await Promise.all([listBills(), listAppointments(input.from, input.to), listExpenses()]);
+      const rangeBills = bills.filter(bill => new Date(bill.createdAt) >= input.from && new Date(bill.createdAt) <= input.to);
+      const rangeExpenses = expenses.filter(expense => new Date(expense.expenseDate) >= input.from && new Date(expense.expenseDate) <= input.to);
+      return { sales: rangeBills.reduce((sum, bill) => sum + bill.amount, 0), collections: rangeBills.filter(bill => bill.paymentMethod !== "pending").reduce((sum, bill) => sum + bill.amount, 0), bills: rangeBills.length, appointments: appointments.length, expenses: rangeExpenses.reduce((sum, expense) => sum + expense.amount, 0), expenseByCategory: rangeExpenses.reduce<Record<string, number>>((out, expense) => { out[expense.category] = (out[expense.category] || 0) + expense.amount; return out; }, {}) };
+    }),
   }),
   admin: router({
     promoteStaff: adminProcedure.input(z.object({ openId: z.string().min(1) })).mutation(() => ({ success: true })),

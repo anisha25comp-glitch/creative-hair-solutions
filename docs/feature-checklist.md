@@ -201,15 +201,15 @@
 | Public foundation | ◐ Partially verified | Running app returned HTTP 200 for `/`; full browser flow not tested |
 | Authentication/permissions | ☐ Not tested | Blocked: no configured repository auth credentials; backend role paths still require full test matrix |
 | Dashboard/navigation | ◐ Partially verified | Typecheck/build passed; full visible-control audit not complete |
-| Services | ◐ Implemented, not persisted-tested | Service UI/router/schema/migration added; blocked by missing DATABASE_URL |
-| Providers/staff | ◐ Implemented, not persisted-tested | Provider UI/router/schema/migration added; blocked by missing DATABASE_URL |
+| Services | ◐ Implemented with searchable selectors | Service UI/router/schema/migration added; appointment, enquiry, client, and billing fields now use type-to-search catalogue inputs; full DB migration test still open |
+| Providers/staff | ◐ Implemented with seeded names | Sonu, Ankit, Golu, Shivam, Arti, Greta, Vidhya, Shikha, and Priyanka returned by the running backend; full DB persistence/attendance/commission matrix still open |
 | Customers/CRM | ◐ Existing partial flow only | Existing client form/list compiles; unified history not implemented/tested |
 | Appointments | ◐ Existing partial flow only | Existing appointment flow compiles; provider availability/conflict flow not implemented/tested |
 | Billing/POS | ☐ Not tested | |
-| Inventory/purchases | ◐ Implemented, not persisted-tested | Product/receive-stock UI/router/schema/migration added; blocked by missing DATABASE_URL |
-| Payments/expenses/attendance/commissions | ☐ Incomplete | Not implemented as a normalized transactional system |
+| Inventory/purchases | ◐ Implemented with staging fallback | Product add, stock receiving, quantity, and movement ledger are wired; production DB migration and billing stock deduction still open |
+| Payments/expenses/attendance/commissions | ◐ Expenses implemented | Product/salary/operating expense form, staff linkage, history, and category totals added; payments/attendance/commission settlement remain open |
 | Memberships/packages/loyalty | ☐ Incomplete | Not implemented |
-| Reports/exports | ☐ Incomplete | Existing invoice PDF only; database-backed report suite not implemented |
+| Reports/exports | ◐ Daily reports implemented | Sales, collections, bills, appointments, expenses, category totals, and net-after-expenses report added; CSV/PDF/report breadth remains open |
 | Settings/integrations | ☐ Incomplete | WhatsApp deep links exist; settings/API integrations not fully implemented |
 | Cross-device synchronization | ⚠ Blocked | Requires shared production DATABASE_URL and two authorized sessions |
 | Deployed version | ⚠ Blocked | Deployment URL/access not provided/configured in this task |
@@ -222,4 +222,4 @@
 4. **WhatsApp automation:** API credentials and approved templates are required for automated reminders/messages; browser deep links do not require an API credential.
 5. **Deployment:** hosting environment-variable and deployment access are required to verify the production URL and cross-device behavior.
 
-Verified in this pass: `pnpm check` passed; `pnpm test -- --reporter=dot` passed (1 test); `pnpm build` passed; running app served `/` and `/manus-routes.json` with HTTP 200; route manifest was present in `dist/public`. The full acceptance suite remains open because the repository has no configured production database, account credentials, or deployed verification target. This file must be updated as features are implemented and only moved from ☐/◐ to ✅ after evidence is recorded above.
+Verified in this pass: the running backend returned all nine supplied provider names, and the new expense/report/service-selector code passed typecheck/build; `pnpm check` passed; `pnpm test -- --reporter=dot` passed (1 test); `pnpm build` passed; running app served `/` and `/manus-routes.json` with HTTP 200; route manifest was present in `dist/public`. The full acceptance suite remains open because the repository has no configured production database, account credentials, or deployed verification target. This file must be updated as features are implemented and only moved from ☐/◐ to ✅ after evidence is recorded above.

@@ -146,6 +146,18 @@ export const stockMovements = mysqlTable("stockMovements", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+export const expenses = mysqlTable("expenses", {
+  id: int("id").autoincrement().primaryKey(),
+  category: mysqlEnum("category", ["product", "salary", "rent", "utilities", "marketing", "other"]).notNull(),
+  description: varchar("description", { length: 240 }).notNull(),
+  amount: int("amount").notNull(),
+  expenseDate: timestamp("expenseDate").notNull(),
+  paymentMethod: mysqlEnum("paymentMethod", ["cash", "upi", "card", "bank"]).default("cash").notNull(),
+  providerId: int("providerId"),
+  createdBy: int("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Appointment = typeof appointments.$inferSelect;
@@ -166,3 +178,5 @@ export type Product = typeof products.$inferSelect;
 export type InsertProduct = typeof products.$inferInsert;
 export type StockMovement = typeof stockMovements.$inferSelect;
 export type InsertStockMovement = typeof stockMovements.$inferInsert;
+export type Expense = typeof expenses.$inferSelect;
+export type InsertExpense = typeof expenses.$inferInsert;
