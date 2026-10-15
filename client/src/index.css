@@ -1016,3 +1016,10 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 
 /* Keep the supplied CHS artwork itself unchanged; only size it cleanly in the header. */
 .site-logo-image.site-header-logo { width: 54px; height: 54px; object-fit: contain; border: 0; border-radius: 0; padding: 0; background: transparent; filter: none; }
+
+.staff-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }
+.staff-stats article { padding: 16px; border: 1px solid var(--border, #e7ded8); border-radius: 14px; background: color-mix(in srgb, var(--card, #fff) 92%, #f6eee9); }
+.staff-stats span, .staff-stats small { display: block; color: var(--muted-foreground, #766d68); font-size: 12px; }
+.staff-stats strong { display: block; margin: 8px 0 4px; font-size: 22px; color: var(--foreground, #241e1b); }
+@media (max-width: 900px) { .staff-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .staff-stats { grid-template-columns: 1fr; } }

@@ -158,6 +158,16 @@ export const expenses = mysqlTable("expenses", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+export const staffLeaves = mysqlTable("staffLeaves", {
+  id: int("id").autoincrement().primaryKey(),
+  providerId: int("providerId"),
+  providerName: varchar("providerName", { length: 160 }).notNull(),
+  leaveDate: timestamp("leaveDate").notNull(),
+  reason: varchar("reason", { length: 240 }),
+  createdBy: int("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Appointment = typeof appointments.$inferSelect;
@@ -180,3 +190,5 @@ export type StockMovement = typeof stockMovements.$inferSelect;
 export type InsertStockMovement = typeof stockMovements.$inferInsert;
 export type Expense = typeof expenses.$inferSelect;
 export type InsertExpense = typeof expenses.$inferInsert;
+export type StaffLeave = typeof staffLeaves.$inferSelect;
+export type InsertStaffLeave = typeof staffLeaves.$inferInsert;
