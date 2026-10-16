@@ -40,6 +40,14 @@ export const bills = mysqlTable("bills", {
   paymentMethod: mysqlEnum("paymentMethod", ["cash", "upi", "card", "pending"]).default("pending").notNull(),
   createdBy: int("createdBy"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
+  subtotal: int("subtotal"),
+  discountAmount: int("discountAmount"),
+  gstEnabled: int("gstEnabled").default(0).notNull(),
+  gstRate: int("gstRate"),
+  gstAmount: int("gstAmount"),
+  deletedAt: timestamp("deletedAt"),
+  deletedBy: int("deletedBy"),
+  deleteReason: varchar("deleteReason", { length: 240 }),
 });
 
 export const enquiries = mysqlTable("enquiries", {
@@ -71,6 +79,7 @@ export const clients = mysqlTable("clients", {
   assignedTo: varchar("assignedTo", { length: 120 }),
   service: varchar("service", { length: 160 }),
   gender: mysqlEnum("gender", ["female", "male", "other"]),
+  normalizedPhone: varchar("normalizedPhone", { length: 32 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
@@ -165,6 +174,15 @@ export const staffLeaves = mysqlTable("staffLeaves", {
   leaveDate: timestamp("leaveDate").notNull(),
   reason: varchar("reason", { length: 240 }),
   createdBy: int("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const billAudit = mysqlTable("billAudit", {
+  id: int("id").autoincrement().primaryKey(),
+  billId: int("billId").notNull(),
+  action: varchar("action", { length: 40 }).notNull(),
+  userId: int("userId"),
+  details: varchar("details", { length: 240 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

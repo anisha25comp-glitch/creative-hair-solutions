@@ -1033,3 +1033,13 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 .reports-workspace .staff-stats span, .reports-workspace .staff-stats small { color: #745b50; }
 .reports-workspace .staff-stats strong { color: #38231c; }
 .reports-workspace input, .reports-workspace select { background: #fffdf9; color: #38231c; }
+
+.phone-suggestions { position: absolute; z-index: 60; left: 0; right: 0; top: calc(100% + 4px); background: #fffdf9; border: 1px solid #d8b989; border-radius: 10px; box-shadow: 0 12px 28px rgba(55,35,20,.16); overflow: hidden; }
+.phone-suggestions button { display: flex; justify-content: space-between; gap: 16px; width: 100%; padding: 10px 12px; border: 0; border-bottom: 1px solid #eee1d3; background: transparent; color: #38231c; text-align: left; cursor: pointer; }
+.phone-suggestions button:hover { background: #f7eee4; }
+.phone-suggestions span { color: #745b50; }
+.gst-toggle { display: flex; align-items: end; gap: 18px; padding: 14px 16px; background: #fbf4ed; border: 1px solid #ead8c6; border-radius: 10px; color: #38231c; }
+.gst-toggle > label:first-child { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+.gst-toggle input[type="checkbox"] { width: 17px; height: 17px; accent-color: #b67859; }
+.invoice-delete { border-color: #c56b63; color: #a13d35; }
+.invoice-delete:hover { background: #c56b63; color: #fff; }
