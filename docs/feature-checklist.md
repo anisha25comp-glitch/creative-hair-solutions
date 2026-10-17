@@ -235,3 +235,12 @@ Verified in this pass: the running backend returned all nine supplied provider n
 | Space/case/punctuation-insensitive service search | Normalized picker and rate lookup match `Haircut`, `Hair Cut`, `hair cut`, `HAIRCUT` | Existing catalogue preserved | No duplicate service records | Existing catalogue access | Build/typecheck passed; deployed browser matrix open | ◐ Implemented |
 
 Validation evidence: managed and source `pnpm check`, `pnpm test -- --reporter=dot`, and `pnpm build` passed; shared DB structures were verified; authenticated preview bill creation, customer persistence, and authorized void/delete were smoke-tested. Ordinary WhatsApp Web links cannot send automatically; an approved WhatsApp Business API with provider credentials and templates is required for automated sending.
+
+## 2026-10-18 — Billing history and dashboard readability fix
+
+- **Dashboard card readability:** Complete. Added a light admin-workspace override for card surfaces and readable foreground text; production build passed.
+- **Customer phone history suggestions:** Complete. Bill-created customers are persisted/upserted and phone lookup now matches normalized phone prefixes and raw contact digits; authenticated preview smoke test confirmed the newly billed number reappeared in `staff.clientSuggestions`.
+- **Deleted bills retained:** Complete. Bill listing now returns soft-deleted records, the UI labels them `Deleted` and `retained in database`, and delete actions write `deletedAt`, `deletedBy`, `deleteReason`, and audit data instead of removing rows. Authenticated smoke test confirmed the voided bill remained visible.
+- **Deleted bills excluded from active metrics:** Complete. Dashboard active bill totals, staff performance, monthly summaries, and reports exclude soft-deleted rows. Authenticated report smoke test confirmed the voided test bill was excluded.
+- **WhatsApp service amounts and totals:** Complete. Multi-service billing now persists each service with its individual rate and staff attribution in `itemSummary`; advance payment is persisted in `bills.advanceAmount`; the professional WhatsApp message includes services, subtotal, discount, GST, total, advance, balance due, payment status, and date. Authenticated smoke test confirmed service amounts and advance persistence.
+- **Validation evidence:** `pnpm check`, Vitest regression tests, production build, `pnpm db:migrate:only`, preview route HTTP 200, and authenticated create/list/suggest/void/report workflow all passed. Managed commit: `535361e`.
