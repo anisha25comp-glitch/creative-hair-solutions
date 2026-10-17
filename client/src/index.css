@@ -1043,3 +1043,10 @@ form input:focus, form textarea:focus, form select:focus { border-bottom-color: 
 .gst-toggle input[type="checkbox"] { width: 17px; height: 17px; accent-color: #b67859; }
 .invoice-delete { border-color: #c56b63; color: #a13d35; }
 .invoice-delete:hover { background: #c56b63; color: #fff; }
+
+/* Admin dashboard readability */
+.staff-workspace .bg-card, .staff-workspace [data-slot="card"] { background: #fffdf9 !important; color: #38231c !important; border-color: #e2d2c5 !important; }
+.staff-workspace .text-card-foreground { color: #38231c !important; }
+.bill-status-deleted { color: #b34d42; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.bill-deleted-note { display: inline-block; color: #a06e62; font-size: 10px; line-height: 1.4; }
+.bill-history-deleted { opacity: .82; background: #fff8f5 !important; }

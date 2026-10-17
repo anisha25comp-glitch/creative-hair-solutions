@@ -37,6 +37,7 @@ export const bills = mysqlTable("bills", {
   branch: mysqlEnum("branch", ["ulhasnagar", "badlapur"]).default("ulhasnagar").notNull(),
   itemSummary: text("itemSummary").notNull(),
   amount: int("amount").notNull(),
+  advanceAmount: int("advanceAmount").default(0).notNull(),
   paymentMethod: mysqlEnum("paymentMethod", ["cash", "upi", "card", "pending"]).default("pending").notNull(),
   createdBy: int("createdBy"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

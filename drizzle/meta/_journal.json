@@ -78,6 +78,13 @@
       "when": 1792101589314,
       "tag": "0010_billing_history_controls",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1792266592124,
+      "tag": "0011_bill_advance_amount",
+      "breakpoints": true
     }
   ]
 }
